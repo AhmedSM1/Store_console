@@ -1,0 +1,19 @@
+EUREKA_ENABLED: false
+AUTH_SERVER_URL: http://localhost:8070/oauth2/jwks
+MONGO_URI: mongodb://localhost:27017/products
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  metrics:
+    export:
+      simple:
+        enabled: false

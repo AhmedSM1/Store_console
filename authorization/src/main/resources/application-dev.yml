@@ -1,0 +1,12 @@
+db:
+  url: jdbc:postgresql://localhost:5432/auth_db
+  username: postgres
+  password: password
+  driver: org.postgresql.Driver
+  dialect: org.hibernate.dialect.PostgreSQLDialect
+  showSql: true
+
+spring:
+  jpa:
+    defer-datasource-initialization: true
+

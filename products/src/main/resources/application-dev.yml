@@ -1,0 +1,2 @@
+MONGO_URI: mongodb://localhost:27017/products
+AUTH_SERVER_URL: http://localhost:8070

@@ -1,0 +1,89 @@
+services:
+  authorization:
+    build: ./authorization
+    container_name: auth-service
+    ports:
+      - "8070:8070"
+    depends_on:
+      - postgres
+    environment:
+      - ENV=docker 
+    networks:
+      - store-network
+  products:
+    build: ./products
+    container_name: products-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    networks:
+      - store-network
+    environment:
+      - ENV=docker 
+  postgres:
+    image: postgres:16-alpine
+    container_name: store-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth_db
+    volumes:
+      - ./init/postgres:/docker-entrypoint-initdb.d
+    networks:
+      - store-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: store-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+    depends_on:
+      - postgres
+    networks:
+      - store-network
+
+  mongodb:
+    image: mongo:6.0
+    container_name: store-mongo
+    command: ["--replSet", "rs0", "--bind_ip_all"]
+    ports:
+      - "27017:27017"
+    healthcheck:
+      test: echo "try { rs.status() } catch (err) { rs.initiate() }" | mongosh --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    # volumes:
+      # - mongo_data:/data/db
+      # - ./init/mongo:/docker-entrypoint-initdb.d
+    networks:
+      - store-network
+
+  mongo-express:
+    image: mongo-express
+    container_name: store-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH=false
+    depends_on:
+      - mongodb
+    networks:
+      - store-network
+
+networks:
+  store-network:
+    driver: bridge
+
+volumes:
+  mongo_data:

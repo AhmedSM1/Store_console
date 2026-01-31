@@ -1,0 +1,38 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /products-service
+spring:
+  application:
+    name: PRODUCTS-SERVICE
+  profiles:
+    active: ${ENV}
+
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+
+  cloud:
+    discovery:
+          enabled: ${EUREKA_ENABLED:true}
+
+  actuator:
+    health:
+          show-details: always
+          enabled: true
+
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      show-details: never
+      enabled: true
+
+store:
+  discount:
+    employee-discount: 0.30
+    affiliate-discount: 0.10
+    loyalty-discount: 0.10
+    flat-discount: 5

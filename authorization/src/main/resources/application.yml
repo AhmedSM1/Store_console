@@ -1,0 +1,48 @@
+server:
+  port: 8070
+  servlet:
+    context-path: /auth-service
+spring:
+  application:
+    name: AUTH-SERVICE
+  profiles:
+    active: ${ENV}
+  datasource:
+    url:  ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+    driver-class-name: ${db.driver}
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+        format_sql: true
+        dialect: ${db.dialect}
+        use_sql_comments: true
+    ddl-auto: update
+    show-sql: false
+    hibernate:
+      dialect: ${db.dialect}
+      ddl-auto: update
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      show-details: never
+      enabled: true
+
+logging:
+  level:
+    root: INFO
+
+app:
+  security:
+    jwtSecret: kashdsakdhaisdhwqhdu323uhewdwiuedhwiehdwiwdeiuhdwiuhwsoiajdaoidjas
+    jwtExpiration: 15  #Minutes
+    refreshTokenExpiration: 3 #Days
+  properties:
+    domain_suffix: localhost
+    max_subdomain_length: 90
+

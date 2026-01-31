@@ -75,8 +75,10 @@ INSERT INTO role_authorities (role_id, authority_id) VALUES
 (2, 11),
 (3, 1),
 (3, 4),
+(3, 5),
 (3, 7),
 (3, 10),
+
 (3, 11);
 
 -- Insert Admin User (password is BCrypt encoded)

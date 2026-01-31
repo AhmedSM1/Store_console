@@ -64,7 +64,7 @@ class ProductControllerTest {
         when(productService.createNewProduct(any(CreateProductRequest.class)))
                 .thenReturn(createdProduct);
 
-        mockMvc.perform(post("/api/products")
+        mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"New Product\",\"description\":\"New Description\",\"price\":150.0,\"quantity\":5}"))
                 .andExpect(status().isCreated());
@@ -75,7 +75,7 @@ class ProductControllerTest {
         when(productService.getAllProducts())
                 .thenReturn(Collections.singletonList(testProductDTO));
 
-        mockMvc.perform(get("/api/products")
+        mockMvc.perform(get("/products")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -85,7 +85,7 @@ class ProductControllerTest {
         when(productService.getProductById("1"))
                 .thenReturn(testProductDTO);
 
-        mockMvc.perform(get("/api/products/1")
+        mockMvc.perform(get("/products/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -95,7 +95,7 @@ class ProductControllerTest {
         when(productService.searchProducts("Test"))
                 .thenReturn(Collections.singletonList(testProductDTO));
 
-        mockMvc.perform(get("/api/products/search")
+        mockMvc.perform(get("/products/search")
                         .param("name", "Test")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -106,7 +106,7 @@ class ProductControllerTest {
     void testDeleteProduct() throws Exception {
         doNothing().when(productService).deleteProduct("1");
 
-        mockMvc.perform(delete("/api/products/1")
+        mockMvc.perform(delete("/products/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -117,7 +117,7 @@ class ProductControllerTest {
         when(productService.getAllProductsByCategory("Electronics"))
                 .thenReturn(Collections.singletonList(testProductDTO));
 
-        mockMvc.perform(get("/api/products/categories/Electronics")
+        mockMvc.perform(get("/products/categories/Electronics")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -136,7 +136,7 @@ class ProductControllerTest {
         when(productService.updateProduct(any(String.class), any(ProductDTO.class)))
                 .thenReturn(updatedProduct);
 
-        mockMvc.perform(put("/api/products/1")
+        mockMvc.perform(put("/products/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Updated Product\",\"description\":\"Updated Description\",\"price\":200.0,\"quantity\":15}"))
                 .andExpect(status().isOk());

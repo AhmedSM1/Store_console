@@ -12,16 +12,22 @@ spring:
     mongodb:
       uri: ${MONGO_URI}
 
-  cloud:
-    discovery:
-          enabled: ${EUREKA_ENABLED:true}
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_SERVER_URL}
   actuator:
     health:
           show-details: always
           enabled: true
 
-
+app:
+  security:
+    jwtSecret: kashdsakdhaisdhwqhdu323uhewdwiuedhwiehdwiwdeiuhdwiuhwsoiajdaoidjas
+    jwtExpiration: 15  #Minutes
+    refreshTokenExpiration: 3 #Days
 management:
   endpoints:
     enabled-by-default: false

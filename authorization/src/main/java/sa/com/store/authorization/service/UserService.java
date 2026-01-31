@@ -1,6 +1,7 @@
 package sa.com.store.authorization.service;
 
 import sa.com.store.authorization.controller.dto.*;
+import sa.com.store.authorization.data.UserEntity;
 
 public interface UserService {
     UserRegistrationResponse registerCustomer(UserRegistrationRequest request);
@@ -9,11 +10,9 @@ public interface UserService {
 
 
     UserResponse getCurrentUserProfile();
-    
     UserResponse getUserById(Long userId);
-    
     UserResponse updateCurrentUserProfile(UserUpdateRequest request);
-    
+    UserEntity getByUsername(String username);
     void changeCurrentUserPassword(PasswordChangeRequest request);
     
     void changeCurrentUserEmail(EmailChangeRequest request);

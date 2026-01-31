@@ -2,6 +2,7 @@ package sa.com.store.products.mapper;
 
 import org.springframework.stereotype.Component;
 import sa.com.store.products.controller.dto.ProductDTO;
+import sa.com.store.products.entity.Category;
 import sa.com.store.products.entity.Product;
 
 @Component
@@ -17,6 +18,7 @@ public class ProductMapper {
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
+                .category(Category.valueOf(product.getCategory()))
                 .build();
     }
 
@@ -30,6 +32,7 @@ public class ProductMapper {
                 .description(productDTO.getDescription())
                 .price(productDTO.getPrice())
                 .quantity(productDTO.getQuantity())
+                .Category(productDTO.getCategory().name())
                 .build();
     }
 }

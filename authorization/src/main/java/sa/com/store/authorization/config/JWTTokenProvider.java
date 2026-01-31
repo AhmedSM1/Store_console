@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import sa.com.store.authorization.controller.dto.UserResponse;
 import sa.com.store.authorization.data.AuthenticationUser;
 import sa.com.store.authorization.data.RefreshToken;
 import sa.com.store.authorization.data.UserEntity;
@@ -36,8 +37,14 @@ public class JWTTokenProvider {
     public String generateJwtToken(Authentication authentication) {
         AuthenticationUser userPrincipal = (AuthenticationUser) authentication.getPrincipal();
         Map<String, Object> claims = new HashMap<>();
-        claims.put("authorities", userPrincipal.getAuthorities());
-        return buildJwtToken(userPrincipal.getUsername(), claims);
+        if (userPrincipal != null) {
+            claims.put("authorities", userPrincipal.getAuthorities().stream()
+                    .map(GrantedAuthority::getAuthority) // Extract just the string
+                    .collect(Collectors.toList()));
+            return buildJwtToken(userPrincipal.getUsername(), claims);
+        }else {
+            throw new AuthorizationException("Authentication failed", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     public String getUserNameFromJwtToken(String token) {
@@ -55,6 +62,7 @@ public class JWTTokenProvider {
     }
 
     public RefreshToken createRefreshToken(UserEntity user) {
+
         return RefreshToken.builder()
                 .user(user)
                 .token(UUID.randomUUID().toString())

@@ -33,9 +33,7 @@ management:
       show-details: never
       enabled: true
 
-logging:
-  level:
-    root: INFO
+
 
 app:
   security:

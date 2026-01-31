@@ -57,13 +57,12 @@ services:
     ports:
       - "27017:27017"
     healthcheck:
-      test: echo "try { rs.status() } catch (err) { rs.initiate() }" | mongosh --quiet
+      test: echo "db.runCommand('ping').ok" | mongosh localhost:27017/test --quiet
       interval: 10s
       timeout: 10s
       retries: 5
-    # volumes:
-      # - mongo_data:/data/db
-      # - ./init/mongo:/docker-entrypoint-initdb.d
+    volumes:
+      - ./init/mongo:/docker-entrypoint-initdb.d
     networks:
       - store-network
 

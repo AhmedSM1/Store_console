@@ -26,6 +26,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(request.description())
                 .price(request.price())
                 .quantity(request.quantity())
+                .category(request.category())
                 .build();
         Product product = productMapper.toEntity(productDTO);
         Product savedProduct = productRepository.save(product);

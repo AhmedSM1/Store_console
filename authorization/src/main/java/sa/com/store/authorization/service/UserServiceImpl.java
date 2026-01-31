@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or @currentUserService.isCurrentUser(#userId)")
+    @PreAuthorize("hasAuthority('USER_WRITE') or @currentUserService.isCurrentUser(#userId)")
     public UserResponse getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
@@ -80,6 +80,12 @@ public class UserServiceImpl implements UserService {
         UserEntity updatedUser = userRepository.save(currentUser);
         
         return userMapper.toResponse(updatedUser);
+    }
+
+    @Override
+    public UserEntity getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
     }
 
     @Override

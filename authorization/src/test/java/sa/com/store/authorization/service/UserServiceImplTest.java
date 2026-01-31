@@ -384,10 +384,7 @@ class UserServiceImplTest {
                 .id(1L)
                 .username("testuser")
                 .email("test@example.com")
-                .firstname("John")
-                .lastname("Doe")
                 .phone("+1234567891")
-                .avatar("avatar.jpg")
                 .role("ROLE_USER")
                 .enabled(true)
                 .build();
@@ -404,10 +401,7 @@ class UserServiceImplTest {
         assertEquals(1L, response.id());
         assertEquals("testuser", response.username());
         assertEquals("test@example.com", response.email());
-        assertEquals("John", response.firstname());
-        assertEquals("Doe", response.lastname());
         assertEquals("+1234567891", response.phone());
-        assertEquals("avatar.jpg", response.avatar());
         assertEquals("ROLE_USER", response.role());
         assertTrue(response.enabled());
 

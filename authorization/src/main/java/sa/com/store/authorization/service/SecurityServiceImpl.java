@@ -26,7 +26,7 @@ public class SecurityServiceImpl implements SecurityService {
 
     private final AuthenticationManager authenticationManager;
     private final JWTTokenProvider tokenProvider;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final RefreshTokenRepository refreshTokenRepository;
     private final SecurityUserDetailsService userDetailsService;
 
@@ -45,9 +45,7 @@ public class SecurityServiceImpl implements SecurityService {
             );
             String accessToken = tokenProvider.generateJwtToken(authentication);
             // Get user information
-            UserEntity user = userRepository.findByUsername(request.username())
-                    .orElseThrow(() -> new AuthorizationException("User not found", HttpStatus.UNAUTHORIZED));
-
+            UserEntity user =userService.getByUsername(request.username());
             RefreshToken refreshToken = createRefreshToken(user);
             return UserLoginResponse.builder()
                     .accessToken(accessToken)
@@ -84,8 +82,6 @@ public class SecurityServiceImpl implements SecurityService {
      * Creates a new refresh token for a user
      */
     private RefreshToken createRefreshToken(UserEntity user) {
-        // Delete any existing refresh tokens for this user
-        refreshTokenRepository.deleteByUser(user);
         var refreshToken = tokenProvider.createRefreshToken(user);
         // Save and return
         return refreshTokenRepository.save(refreshToken);

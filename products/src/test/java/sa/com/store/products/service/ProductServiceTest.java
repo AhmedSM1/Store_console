@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import sa.com.store.products.controller.dto.CreateProductRequest;
 import sa.com.store.products.controller.dto.ProductDTO;
+import sa.com.store.products.entity.Category;
 import sa.com.store.products.entity.Product;
 import sa.com.store.products.mapper.ProductMapper;
 import sa.com.store.products.repository.ProductRepository;
@@ -61,7 +62,8 @@ class ProductServiceTest {
                 "Test Product",
                 "Test Description",
                 BigDecimal.valueOf(100.0),
-                10
+                10,
+                Category.groceries
         );
 
         ProductDTO expectedDTO = ProductDTO.builder()

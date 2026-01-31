@@ -14,13 +14,11 @@ import sa.com.store.authorization.config.JWTTokenProvider;
 import sa.com.store.authorization.controller.dto.UserLoginRequest;
 import sa.com.store.authorization.controller.dto.UserLoginResponse;
 import sa.com.store.authorization.data.RefreshToken;
-import sa.com.store.authorization.repository.RefreshTokenRepository;
 import sa.com.store.authorization.data.UserEntity;
+import sa.com.store.authorization.repository.RefreshTokenRepository;
 import sa.com.store.authorization.exception.AuthorizationException;
-import sa.com.store.authorization.repository.UserRepository;
 
 import java.time.Instant;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,20 +37,25 @@ class SecurityServiceImplTest {
     private JWTTokenProvider jwtTokenProvider;
 
     @Mock
-    private UserRepository userRepository;
+    private UserService userService;  // ADD THIS
 
     @Mock
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
+    private SecurityUserDetailsService userDetailsService;  // MISSING
 
     @Test
     void login_validCredentials_returnsAccessTokenAndRefreshToken() {
         // Arrange
         UserLoginRequest request = new UserLoginRequest("validUsername", "validPassword");
         Authentication authentication = Mockito.mock(Authentication.class);
-        UserEntity user = UserEntity.builder()
+        UserEntity user = UserEntity.builder().username("validUsername")
                 .userId(1L)
-                .username("validUsername")
-                .password("hashedPassword")
+                .password("1234567890")
+                .enabled(true)
+                .isAffiliate(false)
+                .role("ROLE_USER")
                 .build();
         RefreshToken refreshToken = RefreshToken.builder()
                 .id(1L)
@@ -64,7 +67,7 @@ class SecurityServiceImplTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtTokenProvider.generateJwtToken(authentication)).thenReturn("accessToken123");
-        when(userRepository.findByUsername("validUsername")).thenReturn(Optional.of(user));
+        when(userService.getByUsername("validUsername")).thenReturn(user);  // CHANGED
         when(jwtTokenProvider.createRefreshToken(user)).thenReturn(refreshToken);
         when(refreshTokenRepository.save(refreshToken)).thenReturn(refreshToken);
 
@@ -98,8 +101,8 @@ class SecurityServiceImplTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(userRepository.findByUsername("nonexistentUser"))
-                .thenReturn(Optional.empty());
+        when(userService.getByUsername("nonexistentUser"))  // CHANGED
+                .thenThrow(new AuthorizationException("User not found", HttpStatus.UNAUTHORIZED));
 
         // Act & Assert
         AuthorizationException exception = assertThrows(AuthorizationException.class, () -> securityService.login(request));
@@ -112,22 +115,18 @@ class SecurityServiceImplTest {
         // Arrange
         UserLoginRequest request = new UserLoginRequest("validUsername", "validPassword");
         Authentication authentication = Mockito.mock(Authentication.class);
-        UserEntity user = UserEntity.builder()
-                .userId(1L)
-                .username("validUsername")
-                .password("hashedPassword")
-                .build();
+        UserEntity user = UserEntity.builder().username("validUsername").build();
         RefreshToken refreshToken = RefreshToken.builder()
                 .id(1L)
                 .token("refreshToken123")
                 .expiryDate(Instant.now().plusSeconds(3600))
-                .user(user)
+                .user(user)  // CHANGED to userId
                 .build();
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtTokenProvider.generateJwtToken(authentication)).thenReturn("accessToken123");
-        when(userRepository.findByUsername("validUsername")).thenReturn(Optional.of(user));
+        when(userService.getByUsername("validUsername")).thenReturn(user);  // CHANGED
         when(jwtTokenProvider.createRefreshToken(user)).thenReturn(refreshToken);
         when(refreshTokenRepository.save(refreshToken)).thenThrow(new RuntimeException());
 

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
+import sa.com.store.products.entity.Category;
 
 import java.math.BigDecimal;
 
@@ -25,6 +26,8 @@ public record CreateProductRequest(
 
         @NotNull(message = "quantity is required")
         @Min(value = 0, message = "quantity must be 0 or greater")
-        Integer quantity
+        Integer quantity,
+        @NotNull(message = "category is required")
+        Category category
 ) {
 }

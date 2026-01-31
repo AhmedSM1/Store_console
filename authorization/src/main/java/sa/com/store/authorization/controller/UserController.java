@@ -33,7 +33,7 @@ public class UserController {
 
     @PostMapping("/admin")
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAuthority('USER_WRITE')")
     public UserRegistrationResponse registerAdmin(@Valid @RequestBody UserRegistrationRequest request) {
         return  userService.registerAdmin(request);
     }

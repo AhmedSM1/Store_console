@@ -1214,62 +1214,6 @@
           "response": []
         },
         {
-          "name": "5- order product",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "let orderId = pm.response.json().orderId;",
-                  "pm.environment.set('AffilateCustomerOrderId', orderId);",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{affiliateCustomerToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{newProduct}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"affilate\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{products}}/products-service/orders",
-              "host": [
-                "{{products}}"
-              ],
-              "path": [
-                "products-service",
-                "orders"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "6- Confirm Order",
           "event": [
             {
@@ -1480,62 +1424,6 @@
             "body": {
               "mode": "raw",
               "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{affiliateProductId}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{products}}/products-service/orders",
-              "host": [
-                "{{products}}"
-              ],
-              "path": [
-                "products-service",
-                "orders"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "4- order product Copy",
-          "event": [
-            {
-              "listen": "test",
-              "script": {
-                "exec": [
-                  "pm.test(\"Status code is 201\", function () {",
-                  "    pm.response.to.have.status(201);",
-                  "});",
-                  "",
-                  "let orderId = pm.response.json().orderId;",
-                  "pm.environment.set('loyalCustomerOrderId', orderId);",
-                  ""
-                ],
-                "type": "text/javascript",
-                "packages": {},
-                "requests": {}
-              }
-            }
-          ],
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{loyalCustomerToken}}",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{newProduct}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

@@ -10,7 +10,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import sa.com.store.products.controller.dto.ConfirmOrderRequest;
 import sa.com.store.products.controller.dto.ConfirmOrderResponse;
 import sa.com.store.products.controller.dto.CreateNewOrderRequest;
 import sa.com.store.products.controller.dto.CreateNewOrderResponse;
@@ -74,6 +73,7 @@ class OrderControllerTest {
                 .build();
     }
 
+
     @Test
     @WithMockUser(username = "testuser")
     void testCreateOrder() throws Exception {
@@ -83,7 +83,7 @@ class OrderControllerTest {
         mockMvc.perform(post("/orders")
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer test-token")
-                        .content("{\"username\":\"testuser\",\"products\":[],\"address\":\"123 Test Street\",\"city\":\"Test City\",\"paymentMethod\":\"CARD\"}"))
+                        .content("{\"username\":\"testuser\",\"products\":[],\"address\":\"123 Test Street\",\"city\":\"Test City\"}"))
                 .andExpect(status().isCreated());
     }
 
@@ -93,10 +93,11 @@ class OrderControllerTest {
         when(orderService.confirmOrder(anyString(), anyString()))
                 .thenReturn(confirmOrderResponse);
 
-        mockMvc.perform(post("/orders/confirm")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"id\":\"order-1\",\"username\":\"testuser\",\"discountType\":\"PERCENTAGE\",\"discountAmount\":\"10\"}"))
-                .andExpect(status().isCreated());
+        mockMvc.perform(put("/orders/confirm?orderId=order-1&username=testuser")
+                )
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.orderId").value("order-1"))
+                .andExpect(jsonPath("$.billAmount").value("90.0"));
     }
 
     @Test

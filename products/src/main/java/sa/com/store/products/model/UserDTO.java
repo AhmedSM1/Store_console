@@ -1,8 +1,10 @@
 package sa.com.store.products.model;
 
-import java.time.LocalDate;
+import lombok.Builder;
+
 import java.time.OffsetDateTime;
 
+@Builder
 public record UserDTO(
         Long id,
         String username,

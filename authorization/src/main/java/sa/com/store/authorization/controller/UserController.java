@@ -71,18 +71,4 @@ public class UserController {
     public void changeEmail(@Valid @RequestBody EmailChangeRequest request) {
         userService.changeCurrentUserEmail(request);
     }
-    
-    @PutMapping("/{userId}/disable")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('USER_DELETE')")
-    public void disableUser(@PathVariable Long userId) {
-        userService.disableUser(userId);
-    }
-    
-    @PutMapping("/{userId}/enable")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasAuthority('USER_DELETE')")
-    public void enableUser(@PathVariable Long userId) {
-        userService.enableUser(userId);
-    }
 }

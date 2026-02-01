@@ -118,6 +118,11 @@ public class OrderServiceImpl implements OrderService{
                 .discountType(order.getDiscountType())
                 .discountAmount(order.getDiscountAmount())
                 .confirmedDate(order.getConfirmedDate())
+                .address(order.getAddress())
+                .city(order.getCity())
+                .createdDate(order.getCreatedDate())
+                .paymentMethod(order.getPaymentMethod())
+
                 .build();
     }
 

@@ -3,6 +3,8 @@ package sa.com.store.authorization.controller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -43,6 +45,19 @@ public class UserControllerIntegrationTest {
                 .build();
     }
 
+    @Test
+    public void testRegisterAffiliate() {
+        UserRegistrationRequest request = uniqueRegistrationRequest("affiliateuser");
+        webTestClient.post()
+                .uri("/users/affiliate")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty();
+    }
     @Test
     public void testRegister() {
         UserRegistrationRequest request = uniqueRegistrationRequest("testuser");
@@ -179,64 +194,13 @@ public class UserControllerIntegrationTest {
                 .expectStatus().isNoContent();
     }
 
-    //@Test
-    //@WithMockUser(username = "admin", authorities = {"USER_DELETE"})
-    public void testDisableUser() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("disableuser");
-
-        UserRegistrationResponse registrationResponse = webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(UserRegistrationResponse.class)
-                .returnResult()
-                .getResponseBody();
-
-        String userId = registrationResponse.id();
-
-        webTestClient.put()
-                .uri("/users/{id}/disable", userId)
-                .exchange()
-                .expectStatus().isNoContent();
-    }
-
-    //@Test
-    //@WithMockUser(username = "admin", authorities = {"USER_DELETE"})
-    public void testEnableUser() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("enableuser");
-
-        UserRegistrationResponse registrationResponse = webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(UserRegistrationResponse.class)
-                .returnResult()
-                .getResponseBody();
-
-        String userId = registrationResponse.id();
-
-        webTestClient.put()
-                .uri("/users/{id}/disable", userId)
-                .exchange()
-                .expectStatus().isNoContent();
-
-        webTestClient.put()
-                .uri("/users/{id}/enable", userId)
-                .exchange()
-                .expectStatus().isNoContent();
-    }
-
     @Test
     public void testRegisterWithInvalidData() {
         UserRegistrationRequest request = UserRegistrationRequest.builder()
                 .username("")
                 .email("invalid-email")
                 .password("short")
-                .phone("") // must be present, still invalid -> expect 400
+                .phone("")
                 .build();
 
         webTestClient.post()
@@ -286,12 +250,96 @@ public class UserControllerIntegrationTest {
                 .expectStatus().isForbidden();
     }
 
+
     @Test
-    @WithMockUser(username = "regular-user")
-    public void testDisableUserWithoutAdminRole() {
-        webTestClient.put()
-                .uri("/users/{id}/disable", 1)
+    @WithMockUser(authorities = "USER_WRITE")
+    public void testRegisterEmployee() {
+        UserRegistrationRequest request = uniqueRegistrationRequest("employeeuser");
+
+        webTestClient.post()
+                .uri("/users/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty();
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER_WRITE")
+    public void testRegisterAdmin() {
+        UserRegistrationRequest request = uniqueRegistrationRequest("adminuser");
+
+        webTestClient.post()
+                .uri("/users/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.id").isNotEmpty();
+    }
+
+    @Test
+    public void testRegisterEmployeeWithoutAuthentication() {
+        UserRegistrationRequest request = uniqueRegistrationRequest("unauthorizedemployee");
+
+        webTestClient.post()
+                .uri("/users/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
                 .exchange()
                 .expectStatus().isForbidden();
+    }
+
+    @Test
+    public void testRegisterAdminWithoutAuthentication() {
+        UserRegistrationRequest request = uniqueRegistrationRequest("unauthorizedadmin");
+
+        webTestClient.post()
+                .uri("/users/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isForbidden();
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER_WRITE")
+    public void testRegisterEmployeeWithInvalidData() {
+        UserRegistrationRequest request = UserRegistrationRequest.builder()
+                .username("")
+                .email("invalid-email")
+                .password("short")
+                .phone("")
+                .build();
+
+        webTestClient.post()
+                .uri("/users/employee")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest();
+    }
+
+    @Test
+    @WithMockUser(authorities = "USER_WRITE")
+    public void testRegisterAdminWithInvalidData() {
+        UserRegistrationRequest request = UserRegistrationRequest.builder()
+                .username("")
+                .email("invalid-email")
+                .password("short")
+                .phone("")
+                .build();
+
+        webTestClient.post()
+                .uri("/users/admin")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import sa.com.store.products.controller.dto.CreateProductRequest;
 import sa.com.store.products.controller.dto.ProductDTO;
+import sa.com.store.products.entity.Category;
 import sa.com.store.products.service.ProductService;
 
 import java.math.BigDecimal;
@@ -59,6 +60,7 @@ class ProductControllerTest {
                 .description("New Description")
                 .price(BigDecimal.valueOf(150.0))
                 .quantity(5)
+                .category(Category.electronics)
                 .build();
 
         when(productService.createNewProduct(any(CreateProductRequest.class)))
@@ -66,8 +68,10 @@ class ProductControllerTest {
 
         mockMvc.perform(post("/products")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"name\":\"New Product\",\"description\":\"New Description\",\"price\":150.0,\"quantity\":5}"))
-                .andExpect(status().isCreated());
+                .content("{\"name\":\"New Product\",\"description\":\"New Description\",\"price\":150.0,\"quantity\":5,\"category\":\"electronics\"}"))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.name").value("New Product"));;
     }
 
     @Test

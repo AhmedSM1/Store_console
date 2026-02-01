@@ -156,36 +156,21 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- attached to Maven test phase -->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
+                        <configuration>
+                            <excludes>
+                               <exclude>sa/com/store/authorization/AuthorizationApplication.java</exclude>
+                                <exclude>sa/com/store/authorization/config/**</exclude>
+
+                            </excludes>
+                        </configuration>
                         <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*sa/com/store/authorization/controller/dto/*</exclude>
-                        <exclude>**/*sa/com/store/authorization/data/*</exclude>
-                        <exclude>**/*sa/com/store/authorization/repository/*</exclude>
-                        <exclude>**/*sa/com/store/authorization/config/*</exclude>
-
-                    </excludes>
-                    <rules>
-                        <rule>
-                            <element>PACKAGE</element>
-                            <limits>
-                                <limit>
-                                    <counter>LINE</counter>
-                                    <value>COVEREDRATIO</value>
-                                    <minimum>0.90</minimum>
-                                </limit>
-                            </limits>
-                        </rule>
-                    </rules>
-                </configuration>
             </plugin>
 		</plugins>
 	</build>

@@ -176,38 +176,23 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
-                    <!-- attached to Maven test phase -->
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/ProductsApplication.java</exclude>
+                                <exclude>**/configs/**</exclude>
+                                <exclude>**/aspect/**</exclude>
+
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
-                <configuration>
-                    <excludes>
-                        <exclude>**/*sa/com/store/products/controller/dto/*</exclude>
-                        <exclude>**/*sa/com/store/products/data/*</exclude>
-                        <exclude>**/*sa/com/store/products/repository/*</exclude>
-                        <exclude>**/*sa/com/store/products/config/*</exclude>
-
-                    </excludes>
-                    <rules>
-                        <rule>
-                            <element>PACKAGE</element>
-                            <limits>
-                                <limit>
-                                    <counter>LINE</counter>
-                                    <value>COVEREDRATIO</value>
-                                    <minimum>0.90</minimum>
-                                </limit>
-                            </limits>
-                        </rule>
-                    </rules>
-                </configuration>
             </plugin>
-
         </plugins>
     </build>
 

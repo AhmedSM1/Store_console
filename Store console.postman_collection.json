@@ -1,0 +1,1668 @@
+{
+  "info": {
+    "_postman_id": "8425f3dd-4c56-4faf-8863-8b400a978ebf",
+    "name": "Store console",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "9642986"
+  },
+  "item": [
+    {
+      "name": "auth service",
+      "item": [
+        {
+          "name": "Get admin user profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auth}}/auth-service/users/me",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get employee user profile Copy",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{storeManagerJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{auth}}/auth-service/users/me",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "me"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create user",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"ahmeds00\",\r\n    \"password\": \"1234678Aa\",\r\n    \"email\": \"dsfdfs00@gmail.com\",\r\n    \"phone\": \"0096658844\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create affiliate user",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"affiliateUser\",\n    \"password\": \"1234678Aa\",\n    \"email\": \"affiliateUser@gmail.com\",\n    \"phone\": \"0096658844\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users/affiliate",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "affiliate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login as employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('storeManagerJwt', jwt);",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"storeManager\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login as regular customer",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"ahmedsl280\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create user admin",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"adminUser\",\r\n    \"password\": \"1234678Aa\",\r\n    \"email\": \"dsfdfs@gmail.com\",\r\n    \"phone\": \"0096658844\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users/admin",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "admin"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "login as admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('adminJwt', jwt);",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"adminUser\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "auth": {
+        "type": "noauth"
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product service",
+      "item": [
+        {
+          "name": "Get all products",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Product",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Iphone18\",\n    \"category\": \"electronics\",\n    \"price\": \"5500\",\n    \"quantity\": 100,\n    \"description\": \"the all new iphone18 from apple\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "customer journey",
+      "item": [
+        {
+          "name": "1- Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"ahmeds00\",\r\n    \"password\": \"1234678Aa\",\r\n    \"email\": \"dsfdfs00@gmail.com\",\r\n    \"phone\": \"0096658844\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2- login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('customerToken', jwt);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"ahmeds00\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3- refresh  token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('customerToken', jwt);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"refreshToken\": \"{{customerRefresgToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/refresh",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "refresh"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4- Get all products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5- order product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('customerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"697e7bd9df81ec047a9a6c01\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"customer1\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6- Confirm Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/confirm?orderId={{customerOrderId}}&username=customer1",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "confirm"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "{{customerOrderId}}",
+                  "type": "text"
+                },
+                {
+                  "key": "username",
+                  "value": "customer1",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7- Get all customer orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/users/customer1",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "users",
+                "customer1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This is regular customer journey\n\nThey will get $5 for every $100"
+    },
+    {
+      "name": "Employee journey",
+      "item": [
+        {
+          "name": "1- Admin login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('adminJwt', jwt);",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"adminUser\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2- Sign up",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{adminJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"employee\",\n    \"password\": \"1234678Aa\",\n    \"email\": \"employee@gmail.com\",\n    \"phone\": \"0096658844\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users/employee",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "employee"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3-  employee login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('storeManagerJwt', jwt);",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"employee\",\n    \"password\": \"1234678Aa\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4- Get all products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5- Create Product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let id = pm.response.json().id;",
+                  "pm.environment.set('newProduct', id);",
+                  "",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{storeManagerJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Saffron 10g\",\n    \"category\": \"groceries\",\n    \"price\": \"10\",\n    \"quantity\": 50,\n    \"description\": \"Premium Iranian saffron threads\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6- order product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('customerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{storeManagerJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{newProduct}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"employee\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7- Confirm Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{storeManagerJwt}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/confirm?orderId={{customerOrderId}}&username=employee",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "confirm"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "{{customerOrderId}}"
+                },
+                {
+                  "key": "username",
+                  "value": "employee"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "8- Get all my orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{customerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/users/employee",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "users",
+                "employee"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This is Employee journey. They can create product and\n\nThey will get 30% discount on non-greccery items and\n\nThey will get $5 for every $100 on all items"
+    },
+    {
+      "name": "Affiliate customer",
+      "item": [
+        {
+          "name": "1- Register",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"affilate\",\r\n    \"password\": \"81230282131132\",\r\n    \"email\": \"dsfjsoiijdsfu@gmail.com\",\r\n    \"phone\": \"0096658844\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/users/affiliate",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "users",
+                "affiliate"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2- login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('affiliateCustomerToken', jwt);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"affilate\",\r\n    \"password\": \"81230282131132\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3- Get all products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let responseData = pm.response.json();",
+                  "let affiliateProductId = responseData[0].id;",
+                  "pm.environment.set('affiliateProductId', affiliateProductId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4- order product For affiliate",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('customerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{affiliateCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{affiliateProductId}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"affilate\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5- order product",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('AffilateCustomerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{affiliateCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{newProduct}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"affilate\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6- Confirm Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{affiliateCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/confirm?orderId={{AffilateCustomerOrderId}}&username=affilate",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "confirm"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "{{AffilateCustomerOrderId}}"
+                },
+                {
+                  "key": "username",
+                  "value": "affilate"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "7- Get all my orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{affiliateCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/users/affilate",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "users",
+                "affilate"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This is affiliate customer journey\n\nThey will get 10% discount on non-greccery items\n\nThey will get $5 for every $100 on all items"
+    },
+    {
+      "name": "Loyal Customer journey",
+      "item": [
+        {
+          "name": "1- login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let jwt = pm.response.json().accessToken;",
+                  "pm.environment.set('loyalCustomerToken', jwt);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"loyalCustomer\",\r\n    \"password\": \"1234678Aa\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{auth}}/auth-service/login",
+              "host": [
+                "{{auth}}"
+              ],
+              "path": [
+                "auth-service",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2- Get all products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "let responseData = pm.response.json();",
+                  "let affiliateProductId = responseData[0].id;",
+                  "pm.environment.set('loyalProductId', affiliateProductId);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/products",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3- order product For loyal Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('loyalCustomerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{loyalCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{affiliateProductId}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4- order product Copy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 201\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "let orderId = pm.response.json().orderId;",
+                  "pm.environment.set('loyalCustomerOrderId', orderId);",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{loyalCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{newProduct}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{products}}/products-service/orders",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "5- Confirm Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{loyalCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/confirm?orderId={{loyalCustomerOrderId}}&username=loyalCustomer",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "confirm"
+              ],
+              "query": [
+                {
+                  "key": "orderId",
+                  "value": "{{loyalCustomerOrderId}}"
+                },
+                {
+                  "key": "username",
+                  "value": "loyalCustomer"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "6- Get all my orders",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{loyalCustomerToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{products}}/products-service/orders/users/loyalCustomerOrderId",
+              "host": [
+                "{{products}}"
+              ],
+              "path": [
+                "products-service",
+                "orders",
+                "users",
+                "loyalCustomerOrderId"
+              ]
+            }
+          },
+          "response": []
+        }
+      ],
+      "description": "This is loyal customer journey\n\nThey will get 5% discount on non-greccery items.\n\nThey will get $5 for every $100 on all items"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ]
+}

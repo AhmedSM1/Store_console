@@ -40,6 +40,7 @@ public class ProductSecurityConfig {
         grantedAuthoritiesConverter.setAuthoritiesClaimName("authorities");
         grantedAuthoritiesConverter.setAuthorityPrefix("");
         JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+        jwtAuthenticationConverter.setPrincipalClaimName("username");
         jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
         return jwtAuthenticationConverter;
     }

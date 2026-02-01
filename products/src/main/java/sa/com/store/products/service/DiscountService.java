@@ -9,6 +9,7 @@ import sa.com.store.products.model.UserDTO;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
@@ -26,11 +27,8 @@ public class DiscountService {
         BigDecimal nonGroceryAmount = calculateNonGroceryTotal(items);
 
         BigDecimal percentage = getUserDiscountPercentage(user);
-        BigDecimal percentageDiscountAmount = nonGroceryAmount.multiply(percentage)
-                .setScale(2, RoundingMode.HALF_UP);
-
+        BigDecimal percentageDiscountAmount = nonGroceryAmount.multiply(percentage);
         BigDecimal amountAfterPercentage = totalAmount.subtract(percentageDiscountAmount);
-
         BigDecimal flatDiscount = amountAfterPercentage.divide(HUNDRED, 0, RoundingMode.FLOOR)
                 .multiply(FLAT_DISCOUNT_PER_HUNDRED);
 
@@ -65,10 +63,10 @@ public class DiscountService {
             return "Employee Discount (30%)";
         } else if (user.isAffiliate()) {
             return "Affiliate Discount (10%)";
-        } else if (isLongTermCustomer(user.createdAt())) {
+        } else if (isLongTermCustomer(user.creationTime())) {
             return "Loyalty Discount (5%)";
         }
-        return "";
+        return "Regular discount";
     }
 
     private BigDecimal getUserDiscountPercentage(UserDTO user) {
@@ -76,13 +74,13 @@ public class DiscountService {
             return EMPLOYEE_DISCOUNT_PERCENTAGE;
         } else if (user.isAffiliate()) {
             return AFFILIATE_DISCOUNT_PERCENTAGE;
-        } else if (isLongTermCustomer(user.createdAt())) {
+        } else if (isLongTermCustomer(user.creationTime())) {
             return LOYALTY_DISCOUNT_PERCENTAGE;
         }
         return BigDecimal.ZERO;
     }
 
-    private boolean isLongTermCustomer(LocalDate regDate) {
-        return regDate != null && ChronoUnit.YEARS.between(regDate, LocalDate.now()) >= LONG_TERM_CUSTOMER_YEARS;
+    private boolean isLongTermCustomer(OffsetDateTime regDate) {
+        return regDate != null && ChronoUnit.YEARS.between(regDate, OffsetDateTime.now()) >= LONG_TERM_CUSTOMER_YEARS;
     }
 }

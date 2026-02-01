@@ -31,6 +31,13 @@ public class UserController {
         return userService.registerAffiliate(request);
     }
 
+    @PostMapping("/employee")
+    @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority('USER_WRITE')")
+    public UserRegistrationResponse registerEmployee(@Valid @RequestBody UserRegistrationRequest request) {
+        return  userService.registerAdmin(request);
+    }
+
     @PostMapping("/admin")
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER_WRITE')")

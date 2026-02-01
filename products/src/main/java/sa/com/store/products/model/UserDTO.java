@@ -1,12 +1,17 @@
 package sa.com.store.products.model;
 
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 public record UserDTO(
-        String id,
-        String name,
+        Long id,
+        String username,
+        String email,
+        String phone,
         String role,
-        LocalDate createdAt,
-        boolean isAffiliate
+        boolean enabled,
+        boolean isAffiliate,
+        OffsetDateTime creationTime
+
 ) {
 }

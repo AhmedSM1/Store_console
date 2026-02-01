@@ -26,13 +26,13 @@ spring:
       ddl-auto: update
 
 management:
-  endpoints:
-    enabled-by-default: false
   endpoint:
     health:
-      show-details: never
-      enabled: true
-
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health
 
 
 app:

@@ -44,6 +44,12 @@ public class UserServiceImpl implements UserService {
         return registerUser(request, userEntity);
     }
 
+    @Override
+    public UserRegistrationResponse registerEmployee(UserRegistrationRequest request) {
+        UserEntity userEntity = userMapper.toEntity(request, "ROLE_MANAGER");
+
+        return registerUser(request, userEntity);    }
+
     private UserRegistrationResponse registerUser(UserRegistrationRequest request, UserEntity userEntity) {
         if (userRepository.findByUsername(request.username()).isPresent()) {
             throw new IllegalArgumentException("Username already exists");

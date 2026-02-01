@@ -1,8 +1,4 @@
-# Docker profile configuration for Products service
-
-# MongoDB connection
 MONGO_URI: mongodb://mongodb:27017/products_db
-
-# OAuth2 Resource Server JWT configuration
 AUTH_SERVER_URL: http://authorization:8070
 
+AUTH_SERVER: authorization:8070

@@ -32,7 +32,6 @@ public class UserMapper {
         if (entity == null) {
             return null;
         }
-
         return UserResponse.builder()
                 .id(entity.getUserId())
                 .username(entity.getUsername())
@@ -40,6 +39,8 @@ public class UserMapper {
                 .phone(entity.getPhonenumber())
                 .role(entity.getRole())
                 .enabled(entity.isEnabled())
+                .isAffiliate(entity.isAffiliate())
+                .creationTime(entity.getCreationTime())
                 .build();
     }
 

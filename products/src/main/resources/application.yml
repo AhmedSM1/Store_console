@@ -7,12 +7,9 @@ spring:
     name: PRODUCTS-SERVICE
   profiles:
     active: ${ENV}
-
   data:
     mongodb:
       uri: ${MONGO_URI}
-
-
   security:
     oauth2:
       resourceserver:
@@ -22,23 +19,16 @@ spring:
     health:
           show-details: always
           enabled: true
-
 app:
   security:
     jwtSecret: kashdsakdhaisdhwqhdu323uhewdwiuedhwiehdwiwdeiuhdwiuhwsoiajdaoidjas
-    jwtExpiration: 15  #Minutes
-    refreshTokenExpiration: 3 #Days
+
+
 management:
-  endpoints:
-    enabled-by-default: false
   endpoint:
     health:
-      show-details: never
-      enabled: true
-
-store:
-  discount:
-    employee-discount: 0.30
-    affiliate-discount: 0.10
-    loyalty-discount: 0.10
-    flat-discount: 5
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: health

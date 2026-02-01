@@ -5,10 +5,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import sa.com.store.products.aspect.Authorized;
 import sa.com.store.products.controller.dto.*;
 import sa.com.store.products.entity.Order;
 import sa.com.store.products.entity.ProductOrder;
 import sa.com.store.products.integration.UserClient;
+import sa.com.store.products.mapper.OrderMapper;
 import sa.com.store.products.model.UserDTO;
 import sa.com.store.products.repository.OrderRepository;
 
@@ -26,11 +28,12 @@ public class OrderServiceImpl implements OrderService{
     private OrderRepository orderRepository;
     private ProductService productService;
     private DiscountService discountService;
+    private OrderMapper orderMapper;
 
 
     @Override
     public CreateNewOrderResponse createNewOrder(CreateNewOrderRequest request, String token) {
-        UserDTO userDetails = getUserDetails(request.username(), token);
+        UserDTO userDetails = getUserDetails(token);
         List<ProductOrder> productOrders = convertToProductOrders(request.products());
         DiscountDto discountDto = discountService.calculateFinalPrice(productOrders, userDetails);
         Order saved = buildAndSaveOrder(request, userDetails, productOrders, discountDto);
@@ -40,6 +43,7 @@ public class OrderServiceImpl implements OrderService{
                 .priceBeforeDiscount(saved.getPriceBeforeDiscount())
                 .priceAfterDiscount(saved.getPriceAfterDiscount())
                 .discountType(discountDto.discountType())
+                .discountAmount(discountDto.discountAmount())
                 .build();
     }
 
@@ -62,8 +66,10 @@ public class OrderServiceImpl implements OrderService{
                                     List<ProductOrder> productOrders, DiscountDto discountDto) {
         return orderRepository.save(Order.builder()
                 .city(request.city())
+                .address(request.address())
+                .createdDate(LocalDate.now())
                 .status("PENDING")
-                .username(userDetails.name())
+                .username(userDetails.username())
                 .products(productOrders)
                 .priceBeforeDiscount(discountDto.priceBeforeDiscount())
                 .priceAfterDiscount(discountDto.priceAfterDiscount())
@@ -73,42 +79,35 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public ConfirmOrderResponse confirmOrder(ConfirmOrderRequest request) {
-        Order order = orderRepository.findById(request.orderId())
-                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + request.orderId()));
+    public ConfirmOrderResponse confirmOrder(String orderId, String username ) {
+        Order order = orderRepository.findByIdAndStatus(orderId, "PENDING")
+                .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
         order.setStatus("CONFIRMED");
         order.setConfirmedDate(LocalDate.now());
         orderRepository.save(order);
 
         return ConfirmOrderResponse.builder()
-                .orderId(request.orderId())
-                .billAmount(request.billAmount())
+                .orderId(orderId)
+                .billAmount(order.getPriceAfterDiscount())
                 .build();
     }
 
     @Override
     public AllOrderResponse getAllOrdersByUsername(String username) {
-        return null;
+        List<Order> orders = orderRepository.findByUsername(username);
+        List<OrderDto> dtoList = orders.stream().map(orderMapper::toDTO).toList();
+        return AllOrderResponse.builder()
+                .orders(dtoList)
+                .build();
+        
+        
     }
 
     @Override
+    @Authorized
     public OrderDto getOrderById(String orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found: " + orderId));
-
-        // Get current user details
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-
-        boolean isAdmin = authorities.stream().anyMatch(a -> a.getAuthority().equals("ADMIN_DASHBOARD_ACCESS"));
-        boolean isManager = authorities.stream().anyMatch(a -> a.getAuthority().equals("ADMIN_DASHBOARD_ACCESS"));
-        boolean isOrderOwner = order.getUsername().equals(currentUsername);
-
-        if (!isAdmin && !isManager && !isOrderOwner) {
-            throw new IllegalArgumentException("Not authorized to view this order");
-        }
-
         return OrderDto.builder()
                 .id(order.getId())
                 .username(order.getUsername())
@@ -123,7 +122,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
 
-    private UserDTO getUserDetails(String userid, String token){
-        return userClient.getUserById(userid, token);
+
+    private UserDTO getUserDetails(String token){
+        return userClient.getUserById(token);
     }
 }

@@ -16,23 +16,25 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#request.username == authentication.name ")
+    @PreAuthorize("authentication.name == #request.username")
+
     public CreateNewOrderResponse createOrder(@RequestBody CreateNewOrderRequest request,
                                               @RequestHeader("Authorization") String token) {
 
        return orderService.createNewOrder(request, token);
     }
 
-    @PostMapping(value = "/confirm")
+    @PutMapping(value = "/confirm")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("#request.username == authentication.name ")
-    public ConfirmOrderResponse confirmOrder(ConfirmOrderRequest request) {
-        return orderService.confirmOrder(request);
+
+    @PreAuthorize("authentication.name == #username")
+    public ConfirmOrderResponse confirmOrder(@RequestParam String orderId, @RequestParam String username) {
+        return orderService.confirmOrder(orderId,username);
     }
 
     @GetMapping(value = "/users/{username}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("#username == authentication.name ")
+    @PreAuthorize("hasAuthority('PRODUCT_READ') || authentication.name == #username")
     public AllOrderResponse getOrdersByUsername(@PathVariable String username) {
         return orderService.getAllOrdersByUsername(username);
     }

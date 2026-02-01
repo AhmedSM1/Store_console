@@ -7,6 +7,7 @@ public interface UserService {
     UserRegistrationResponse registerCustomer(UserRegistrationRequest request);
     UserRegistrationResponse registerAdmin(UserRegistrationRequest request);
     UserRegistrationResponse registerAffiliate(UserRegistrationRequest request);
+    UserRegistrationResponse registerEmployee(UserRegistrationRequest request);
 
 
     UserResponse getCurrentUserProfile();

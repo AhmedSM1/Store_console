@@ -6,7 +6,7 @@ public interface OrderService {
 
     CreateNewOrderResponse createNewOrder(CreateNewOrderRequest request, String token);
 
-    ConfirmOrderResponse confirmOrder(ConfirmOrderRequest request);
+    ConfirmOrderResponse confirmOrder(String orderId, String username);
 
     AllOrderResponse getAllOrdersByUsername(String username);
 

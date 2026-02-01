@@ -41,6 +41,7 @@ public class JWTTokenProvider {
             claims.put("authorities", userPrincipal.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority) // Extract just the string
                     .collect(Collectors.toList()));
+            claims.put("username", userPrincipal.getUsername());
             return buildJwtToken(userPrincipal.getUsername(), claims);
         }else {
             throw new AuthorizationException("Authentication failed", HttpStatus.UNAUTHORIZED);

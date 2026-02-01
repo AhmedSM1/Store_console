@@ -90,7 +90,7 @@ class OrderControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void testConfirmOrder() throws Exception {
-        when(orderService.confirmOrder(any(ConfirmOrderRequest.class)))
+        when(orderService.confirmOrder(anyString(), anyString()))
                 .thenReturn(confirmOrderResponse);
 
         mockMvc.perform(post("/orders/confirm")

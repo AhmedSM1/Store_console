@@ -7,9 +7,8 @@ spring:
     name: PRODUCTS-SERVICE
   profiles:
     active: ${ENV}
-  data:
-    mongodb:
-      uri: ${MONGO_URI}
+  mongodb:
+    uri: ${MONGO_URI:mongodb://mongodb:27017/products_db}
   security:
     oauth2:
       resourceserver:

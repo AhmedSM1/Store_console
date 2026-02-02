@@ -25,16 +25,15 @@ public class LoggingAspect {
 
     @Around(value = "serviceLogging()")
     public Object logAroundService(ProceedingJoinPoint joinPoint) throws Throwable {
-        Object[] args = joinPoint.getArgs();
-        String methodName = joinPoint.getSignature().getName();
-        log.debug(">> {}() - {}", methodName, Arrays.toString(args));
-        Object result = joinPoint.proceed();
-        log.debug("<< {}() - {}", methodName, result);
-        return result;
+        return getObject(joinPoint);
     }
 
     @Around(value = "controllerLogging()")
     public Object logAroundController(ProceedingJoinPoint joinPoint) throws Throwable {
+        return getObject(joinPoint);
+    }
+
+    private Object getObject(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] args = joinPoint.getArgs();
         String methodName = joinPoint.getSignature().getName();
         log.debug(">> {}() - {}", methodName, Arrays.toString(args));

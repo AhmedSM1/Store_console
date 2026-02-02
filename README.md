@@ -5,9 +5,10 @@ This project consists of two main microservices: **Authorization Service** and *
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Docker & Docker Compose
-- Java 17 or higher (for local testing)
-- Maven
+Ensure your development environment meets the Spring Boot 4 requirements:
+- **Java JDK 21** (Required for both the services and the SonarQube scanner)
+- **Docker & Docker Compose**
+
 
 ### Installation & Setup
 1. **Clone the repository:**
@@ -20,7 +21,20 @@ This project consists of two main microservices: **Authorization Service** and *
    ```bash
    docker-compose up -d
    ```
+3. **Run Code Quality Analysis (SonarQube)**
+   Once the containers are healthy, run the automated scan script:
+   ```bash
+   # Grant execution permissions
+   chmod +x ./scan-all.sh
+   
+   # Run the scan (Requires Java 21)
+   ./scan-all.sh
+   ```
 
+4. **View Results**
+   - Open your browser at: [http://localhost:9000](http://localhost:9000)
+   - **Login:** `admin` / **Password:** `admin`
+   - *Note: You will be prompted to change your password on the first login. After changing it, you will see the analysis dashboard for both services.*
 ---
 
 ## 🛠 Database Management Tools

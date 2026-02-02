@@ -293,7 +293,6 @@ class OrderServiceTest {
     void testGetAllOrdersByUsernameSuccess() {
         // Arrange
         List<Order> orders = Collections.singletonList(testOrder);
-        List<OrderDto> orderDtos = Collections.singletonList(testOrderDto);
 
         when(orderRepository.findByUsername("testuser")).thenReturn(orders);
         when(orderMapper.toDTO(testOrder)).thenReturn(testOrderDto);
@@ -326,7 +325,6 @@ class OrderServiceTest {
                 .username("testuser")
                 .status("CONFIRMED")
                 .build();
-        List<OrderDto> orderDtos = List.of(testOrderDto, orderDto2);
 
         when(orderRepository.findByUsername("testuser")).thenReturn(orders);
         when(orderMapper.toDTO(testOrder)).thenReturn(testOrderDto);

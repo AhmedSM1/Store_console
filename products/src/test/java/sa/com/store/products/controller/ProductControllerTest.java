@@ -71,7 +71,7 @@ class ProductControllerTest {
                 .content("{\"name\":\"New Product\",\"description\":\"New Description\",\"price\":150.0,\"quantity\":5,\"category\":\"electronics\"}"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.name").value("New Product"));;
+                .andExpect(jsonPath("$.name").value("New Product"));
     }
 
     @Test
@@ -129,16 +129,15 @@ class ProductControllerTest {
     @Test
     @WithMockUser(authorities = "PRODUCT_READ")
     void testUpdateProduct() throws Exception {
-        ProductDTO updatedProduct = ProductDTO.builder()
-                .id("1")
-                .name("Updated Product")
-                .description("Updated Description")
-                .price(BigDecimal.valueOf(200.0))
-                .quantity(15)
-                .build();
 
         when(productService.updateProduct(any(String.class), any(ProductDTO.class)))
-                .thenReturn(updatedProduct);
+                .thenReturn( ProductDTO.builder()
+                        .id("1")
+                        .name("Updated Product")
+                        .description("Updated Description")
+                        .price(BigDecimal.valueOf(200.0))
+                        .quantity(15)
+                        .build());
 
         mockMvc.perform(put("/products/1")
                         .contentType(MediaType.APPLICATION_JSON)

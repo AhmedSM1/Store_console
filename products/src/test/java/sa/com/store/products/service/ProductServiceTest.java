@@ -66,13 +66,6 @@ class ProductServiceTest {
                 Category.groceries
         );
 
-        ProductDTO expectedDTO = ProductDTO.builder()
-                .name("Test Product")
-                .description("Test Description")
-                .price(BigDecimal.valueOf(100.0))
-                .quantity(10)
-                .build();
-
         when(productMapper.toEntity(any(ProductDTO.class))).thenReturn(product);
         when(productRepository.save(any(Product.class))).thenReturn(product);
         when(productMapper.toDTO(any(Product.class))).thenReturn(productDTO);

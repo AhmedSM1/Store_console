@@ -32,17 +32,24 @@ public class AuthorizedAspect {
     }
 
     private String getCurrentUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Authentication authentication = getAuthentication();
         String username = authentication.getName();
         log.info("Current User Authentication Details: {}", username);
         return username;
     }
 
     private boolean hasAccessPermission(String currentUsername, Order order) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = isUserAdmin(authentication);
-        boolean isOrderOwner = order.getUsername().equals(currentUsername);
-        return isAdmin || isOrderOwner;
+        Authentication authentication = getAuthentication();
+        if (authentication != null) {
+            boolean isAdmin = isUserAdmin(authentication);
+            boolean isOrderOwner = order.getUsername().equals(currentUsername);
+            return isAdmin || isOrderOwner;
+        }
+        return false;
+    }
+
+    private static Authentication getAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
     }
 
     private boolean isUserAdmin(Authentication authentication) {

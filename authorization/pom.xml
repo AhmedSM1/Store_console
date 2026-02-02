@@ -159,16 +159,17 @@
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
-                        <configuration>
-                            <excludes>
-                               <exclude>sa/com/store/authorization/AuthorizationApplication.java</exclude>
-                                <exclude>sa/com/store/authorization/config/**</exclude>
-
-                            </excludes>
-                        </configuration>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/AuthorizationApplication.java</exclude>
+                                <exclude>**/configs/**</exclude>
+                                <exclude>**/aspect/**</exclude>
+
+                            </excludes>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>

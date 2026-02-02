@@ -17,8 +17,5 @@ public interface UserService {
     void changeCurrentUserPassword(PasswordChangeRequest request);
     
     void changeCurrentUserEmail(EmailChangeRequest request);
-    
-    void disableUser(Long userId);
-    
-    void enableUser(Long userId);
+
 }

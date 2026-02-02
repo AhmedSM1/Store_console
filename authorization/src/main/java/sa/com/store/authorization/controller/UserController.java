@@ -32,17 +32,17 @@ public class UserController {
     }
 
     @PostMapping("/employee")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER_WRITE')")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserRegistrationResponse registerEmployee(@Valid @RequestBody UserRegistrationRequest request) {
-        return  userService.registerAdmin(request);
+        return userService.registerEmployee(request);
     }
 
     @PostMapping("/admin")
-    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority('USER_WRITE')")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserRegistrationResponse registerAdmin(@Valid @RequestBody UserRegistrationRequest request) {
-        return  userService.registerAdmin(request);
+        return userService.registerAdmin(request);
     }
 
     @GetMapping("/me")

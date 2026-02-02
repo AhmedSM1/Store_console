@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -15,8 +14,6 @@ import sa.com.store.authorization.controller.dto.*;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
-import sa.com.store.authorization.data.Role;
-import sa.com.store.authorization.repository.RoleRepository;
 
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -24,7 +21,7 @@ import sa.com.store.authorization.repository.RoleRepository;
                 "ENV=test"
         }
 )
-public class AuthControllerIntegrationTest {
+class AuthControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
@@ -33,7 +30,7 @@ public class AuthControllerIntegrationTest {
 
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         this.webTestClient = MockMvcWebTestClient
                 .bindToApplicationContext(context)
                 .apply(springSecurity())
@@ -62,7 +59,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testLoginSuccess() {
+     void testLoginSuccess() {
         String username = "loginuser";
         createUser(username);
 
@@ -79,7 +76,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testLoginWithInvalidCredentials() {
+     void testLoginWithInvalidCredentials() {
         webTestClient.post()
                 .uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -89,7 +86,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testRefreshTokenSuccess() {
+     void testRefreshTokenSuccess() {
         String username = "refreshuser";
         createUser(username);
 
@@ -118,7 +115,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testRefreshTokenWithInvalidToken() {
+     void testRefreshTokenWithInvalidToken() {
         webTestClient.post()
                 .uri("/refresh")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -130,7 +127,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testLoginWithInvalidPayload() {
+     void testLoginWithInvalidPayload() {
         webTestClient.post()
                 .uri("/login")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -140,7 +137,7 @@ public class AuthControllerIntegrationTest {
     }
 
     @Test
-    public void testRefreshWithInvalidPayload() {
+     void testRefreshWithInvalidPayload() {
         webTestClient.post()
                 .uri("/refresh")
                 .contentType(MediaType.APPLICATION_JSON)

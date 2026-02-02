@@ -26,7 +26,7 @@ public class AuthenticationUser implements UserDetails {
     @NonNull
     public Collection<SimpleGrantedAuthority> getAuthorities() {
         return this.authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthority()))
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .toList();
     }
 

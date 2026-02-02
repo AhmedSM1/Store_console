@@ -6,13 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "authorities")
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Builder
-public class Authority {
+public class Authority implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "global_seq")
@@ -20,6 +22,6 @@ public class Authority {
     @Column(name = "authority_id")
     private Long authorityId;
 
-    @Column
-    private String authority;
+    @Column(name = "authority", nullable = false, unique = true)
+    private String authorityName;
 }

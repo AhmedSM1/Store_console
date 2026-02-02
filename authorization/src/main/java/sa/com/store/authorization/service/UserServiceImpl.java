@@ -1,22 +1,26 @@
 package sa.com.store.authorization.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sa.com.store.authorization.controller.dto.*;
 import sa.com.store.authorization.data.UserEntity;
+import sa.com.store.authorization.exception.AuthorizationException;
 import sa.com.store.authorization.mapper.UserMapper;
 import sa.com.store.authorization.repository.UserRepository;
 
-import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    public static final String ROLE_USER = "ROLE_USER";
+    public static final String ROLE_ADMIN = "ROLE_ADMIN";
+    public static final String ROLE_MANAGER = "ROLE_MANAGER";
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
@@ -26,27 +30,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRegistrationResponse registerCustomer(UserRegistrationRequest request) {
-        UserEntity userEntity = userMapper.toEntity(request, "ROLE_USER");
+        UserEntity userEntity = userMapper.toEntity(request, ROLE_USER);
         return registerUser(request, userEntity);
     }
 
     @Override
     public UserRegistrationResponse registerAdmin(UserRegistrationRequest request) {
-        UserEntity userEntity = userMapper.toEntity(request, "ROLE_ADMIN");
+        UserEntity userEntity = userMapper.toEntity(request, ROLE_ADMIN);
 
         return registerUser(request, userEntity);
     }
 
     @Override
     public UserRegistrationResponse registerAffiliate(UserRegistrationRequest request) {
-        UserEntity userEntity = userMapper.toEntity(request, "ROLE_USER");
+        UserEntity userEntity = userMapper.toEntity(request, ROLE_USER);
         userEntity.setAffiliate(true);
         return registerUser(request, userEntity);
     }
 
     @Override
     public UserRegistrationResponse registerEmployee(UserRegistrationRequest request) {
-        UserEntity userEntity = userMapper.toEntity(request, "ROLE_MANAGER");
+        UserEntity userEntity = userMapper.toEntity(request, ROLE_MANAGER);
 
         return registerUser(request, userEntity);    }
 
@@ -74,7 +78,7 @@ public class UserServiceImpl implements UserService {
     @PreAuthorize("hasAuthority('USER_WRITE') or @currentUserService.isCurrentUser(#userId)")
     public UserResponse getUserById(Long userId) {
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
+                .orElseThrow(() -> new AuthorizationException(AuthorizationException.USER_NOT_FOUND_WITH_ID + userId, HttpStatus.BAD_REQUEST ));
         return userMapper.toResponse(user);
     }
 
@@ -91,7 +95,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity getByUsername(String username) {
         return userRepository.findByUsername(username)
-                .orElseThrow(() -> new NoSuchElementException("User not found with username: " + username));
+                .orElseThrow(() -> new AuthorizationException(AuthorizationException.USER_NOT_FOUND_WITH_ID + username, HttpStatus.BAD_REQUEST ));
+
     }
 
     @Override
@@ -117,25 +122,5 @@ public class UserServiceImpl implements UserService {
         userRepository.save(currentUser);
     }
 
-    @Override
-    public void disableUser(Long userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
-        
-        UserEntity currentUser = currentUserService.getCurrentUser();
-        if (user.getUserId().equals(currentUser.getUserId())) {
-            throw new IllegalArgumentException("You cannot disable your own account");
-        }
-        
-        user.setEnabled(false);
-        userRepository.save(user);
-    }
 
-    @Override
-    public void enableUser(Long userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with ID: " + userId));
-        user.setEnabled(true);
-        userRepository.save(user);
-    }
 }

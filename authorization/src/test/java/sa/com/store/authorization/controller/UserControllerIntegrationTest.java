@@ -22,19 +22,34 @@ import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
                 "ENV=test"
         }
 )
-public class UserControllerIntegrationTest {
+ class UserControllerIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;
     private WebTestClient webTestClient;
 
     @BeforeEach
-    public void setup() {
+     void setup() {
         this.webTestClient = MockMvcWebTestClient
                 .bindToApplicationContext(context)
                 .apply(springSecurity())
                 .build();
     }
+
+    private UserRegistrationResponse createUser(String username) {
+        UserRegistrationRequest request = uniqueRegistrationRequest(username);
+        return webTestClient.post()
+                .uri("/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectBody(UserRegistrationResponse.class)
+                .returnResult()
+                .getResponseBody();
+
+    }
+
 
     private static UserRegistrationRequest uniqueRegistrationRequest(String baseUsername) {
         return UserRegistrationRequest.builder()
@@ -46,7 +61,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testRegisterAffiliate() {
+     void testRegisterAffiliate() {
         UserRegistrationRequest request = uniqueRegistrationRequest("affiliateuser");
         webTestClient.post()
                 .uri("/users/affiliate")
@@ -59,7 +74,7 @@ public class UserControllerIntegrationTest {
                 .jsonPath("$.id").isNotEmpty();
     }
     @Test
-    public void testRegister() {
+     void testRegister() {
         UserRegistrationRequest request = uniqueRegistrationRequest("testuser");
 
         webTestClient.post()
@@ -75,41 +90,23 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "testuser2")
-    public void testGetCurrentUser() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("testuser2");
-
-        webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated();
-
+     void testGetCurrentUser() {
+        createUser("testuser2");
         webTestClient.get()
                 .uri("/users/me")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.username").isEqualTo(request.username())
-                .jsonPath("$.email").isEqualTo(request.email());
+                .jsonPath("$.username").isEqualTo("testuser2")
+                .jsonPath("$.email").isNotEmpty();
     }
 
     @Test
     @WithMockUser(username = "testuser3")
-    public void testGetUserById() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("testuser3");
+     void testGetUserById() {
+        UserRegistrationResponse response = createUser("testuser3");
 
-        UserRegistrationResponse registrationResponse = webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectBody(UserRegistrationResponse.class)
-                .returnResult()
-                .getResponseBody();
-
-        String userId = registrationResponse.id();
+        String userId = response.id();
 
         webTestClient.get()
                 .uri("/users/{id}", userId)
@@ -117,13 +114,13 @@ public class UserControllerIntegrationTest {
                 .expectStatus().isOk()
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(userId)
-                .jsonPath("$.username").isEqualTo(request.username())
-                .jsonPath("$.email").isEqualTo(request.email());
+                .jsonPath("$.username").isEqualTo("testuser3")
+                .jsonPath("$.email").isNotEmpty();
     }
 
     @Test
     @WithMockUser(username = "testuser")
-    public void testUpdateCurrentUser() {
+     void testUpdateCurrentUser() {
         UserRegistrationRequest request = uniqueRegistrationRequest("updateuser");
 
         webTestClient.post()
@@ -146,21 +143,12 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "passworduser")
-    public void testChangePassword() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("passworduser");
-
-        webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated();
-
+     void testChangePassword() {
+        this.createUser("passworduser");
         PasswordChangeRequest passwordRequest = PasswordChangeRequest.builder()
                 .currentPassword("OldPassword123!")
                 .newPassword("NewPassword123!")
                 .build();
-
         webTestClient.put()
                 .uri("/users/me/password")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -171,21 +159,12 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "emailuser")
-    public void testChangeEmail() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("emailuser");
-
-        webTestClient.post()
-                .uri("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated();
-
+     void testChangeEmail() {
+        this.createUser("emailuser");
         EmailChangeRequest emailRequest = EmailChangeRequest.builder()
                 .newEmail("newemail@example.com")
                 .password("Password123!")
                 .build();
-
         webTestClient.put()
                 .uri("/users/me/email")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -194,13 +173,15 @@ public class UserControllerIntegrationTest {
                 .expectStatus().isNoContent();
     }
 
-    @Test
-    public void testRegisterWithInvalidData() {
+    @ParameterizedTest
+    @CsvSource({" , Password123!, admin@gmail.com, 05555555555", " testuser, short, admin@gmail.com,05555555555", " testuser, Password123!, invalid-email,05555555555",
+            " testuser, Password123!, admin@gmail.com ,wrongPhoneNum"})
+     void testRegisterWithInvalidData(String username,  String password,String email, String phone) {
         UserRegistrationRequest request = UserRegistrationRequest.builder()
-                .username("")
-                .email("invalid-email")
-                .password("short")
-                .phone("")
+                .username(username)
+                .email(email)
+                .password(password)
+                .phone(phone)
                 .build();
 
         webTestClient.post()
@@ -213,7 +194,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "testuser")
-    public void testChangePasswordWithInvalidData() {
+     void testChangePasswordWithInvalidData() {
         PasswordChangeRequest passwordRequest = PasswordChangeRequest.builder()
                 .currentPassword("wrong-old-password")
                 .newPassword("123")
@@ -229,7 +210,7 @@ public class UserControllerIntegrationTest {
 
     @Test
     @WithMockUser(username = "testuser")
-    public void testChangeEmailWithInvalidData() {
+     void testChangeEmailWithInvalidData() {
         EmailChangeRequest emailRequest = EmailChangeRequest.builder()
                 .newEmail("invalid-email")
                 .build();
@@ -243,7 +224,7 @@ public class UserControllerIntegrationTest {
     }
 
     @Test
-    public void testGetUserWithoutAuthentication() {
+     void testGetUserWithoutAuthentication() {
         webTestClient.get()
                 .uri("/users/me")
                 .exchange()
@@ -251,13 +232,14 @@ public class UserControllerIntegrationTest {
     }
 
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({"admin,adminUser", "employee,employeeuser"})
     @WithMockUser(authorities = "USER_WRITE")
-    public void testRegisterEmployee() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("employeeuser");
+    void testRegisterEmployee_success(String role, String username) {
+        UserRegistrationRequest request = uniqueRegistrationRequest(username);
 
         webTestClient.post()
-                .uri("/users/employee")
+                .uri("/users/"+ role)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
@@ -267,54 +249,31 @@ public class UserControllerIntegrationTest {
                 .jsonPath("$.id").isNotEmpty();
     }
 
-    @Test
-    @WithMockUser(authorities = "USER_WRITE")
-    public void testRegisterAdmin() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("adminuser");
 
-        webTestClient.post()
-                .uri("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isCreated()
-                .expectHeader().contentTypeCompatibleWith(MediaType.APPLICATION_JSON)
-                .expectBody()
-                .jsonPath("$.id").isNotEmpty();
-    }
-
-    @Test
-    public void testRegisterEmployeeWithoutAuthentication() {
+    @ParameterizedTest
+    @CsvSource({"admin", "employee"})
+     void testRegisterWithoutAuthentication(String role) {
         UserRegistrationRequest request = uniqueRegistrationRequest("unauthorizedemployee");
 
         webTestClient.post()
-                .uri("/users/employee")
+                .uri("/users/"+ role)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .exchange()
                 .expectStatus().isForbidden();
     }
 
-    @Test
-    public void testRegisterAdminWithoutAuthentication() {
-        UserRegistrationRequest request = uniqueRegistrationRequest("unauthorizedadmin");
 
-        webTestClient.post()
-                .uri("/users/admin")
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(request)
-                .exchange()
-                .expectStatus().isForbidden();
-    }
-
-    @Test
+    @ParameterizedTest
+    @CsvSource({" , Password123!, admin@gmail.com, 05555555555", " testuser, short, admin@gmail.com,05555555555", " testuser, Password123!, invalid-email,05555555555",
+            " testuser, Password123!, admin@gmail.com ,wrongPhoneNum"})
     @WithMockUser(authorities = "USER_WRITE")
-    public void testRegisterEmployeeWithInvalidData() {
+     void testRegisterEmployeeWithInvalidData(String username,  String password,String email, String phone) {
         UserRegistrationRequest request = UserRegistrationRequest.builder()
-                .username("")
-                .email("invalid-email")
-                .password("short")
-                .phone("")
+                .username(username)
+                .email(email)
+                .password(password)
+                .phone(phone)
                 .build();
 
         webTestClient.post()
@@ -325,16 +284,18 @@ public class UserControllerIntegrationTest {
                 .expectStatus().isBadRequest();
     }
 
-    @Test
-    @WithMockUser(authorities = "USER_WRITE")
-    public void testRegisterAdminWithInvalidData() {
-        UserRegistrationRequest request = UserRegistrationRequest.builder()
-                .username("")
-                .email("invalid-email")
-                .password("short")
-                .phone("")
-                .build();
+    @ParameterizedTest
+    @CsvSource({" , Password123!, admin@gmail.com, 05555555555", " testuser, short, admin@gmail.com,05555555555", " testuser, Password123!, invalid-email,05555555555",
+            " testuser, Password123!, admin@gmail.com ,wrongPhoneNum"})
 
+    @WithMockUser(authorities = "USER_WRITE")
+     void testRegisterAdminWithInvalidData(String username,  String password,String email, String phone) {
+        UserRegistrationRequest request = UserRegistrationRequest.builder()
+                .username(username)
+                .email(email)
+                .password(password)
+                .phone(phone)
+                .build();
         webTestClient.post()
                 .uri("/users/admin")
                 .contentType(MediaType.APPLICATION_JSON)

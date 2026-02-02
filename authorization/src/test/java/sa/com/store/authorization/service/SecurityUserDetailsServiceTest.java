@@ -59,7 +59,7 @@ class SecurityUserDetailsServiceTest {
         testAuthorities = List.of(
                 Authority.builder()
                         .authorityId(1L)
-                        .authority("ROLE_USER")
+                        .authorityName("ROLE_USER")
                         .build()
         );
     }
@@ -164,7 +164,7 @@ class SecurityUserDetailsServiceTest {
         List<Authority> adminAuthorities = List.of(
                 Authority.builder()
                         .authorityId(2L)
-                        .authority("ROLE_ADMIN")
+                        .authorityName("ROLE_ADMIN")
                         .build()
         );
 
@@ -194,8 +194,8 @@ class SecurityUserDetailsServiceTest {
     void testLoadUserByUsernameWithMultipleAuthorities() {
         // Arrange
         List<Authority> multipleAuthorities = List.of(
-                Authority.builder().authorityId(1L).authority("ROLE_USER").build(),
-                Authority.builder().authorityId(2L).authority("ROLE_MODERATOR").build()
+                Authority.builder().authorityId(1L).authorityName("ROLE_USER").build(),
+                Authority.builder().authorityId(2L).authorityName("ROLE_MODERATOR").build()
         );
 
         when(userRepository.findByUsername("testuser"))

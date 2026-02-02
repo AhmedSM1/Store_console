@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import sa.com.store.authorization.controller.dto.UserResponse;
 import sa.com.store.authorization.data.AuthenticationUser;
 import sa.com.store.authorization.data.RefreshToken;
 import sa.com.store.authorization.data.UserEntity;
@@ -20,13 +19,14 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
+
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 
 @Component
 @AllArgsConstructor
 public class JWTTokenProvider {
+    public static final String AUTHORITIES = "authorities";
     private JWTProperties jwtProperties;
     private static final Logger logger = LogManager.getLogger(JWTTokenProvider.class);
 
@@ -38,9 +38,9 @@ public class JWTTokenProvider {
         AuthenticationUser userPrincipal = (AuthenticationUser) authentication.getPrincipal();
         Map<String, Object> claims = new HashMap<>();
         if (userPrincipal != null) {
-            claims.put("authorities", userPrincipal.getAuthorities().stream()
+            claims.put(AUTHORITIES, userPrincipal.getAuthorities().stream()
                     .map(GrantedAuthority::getAuthority) // Extract just the string
-                    .collect(Collectors.toList()));
+                    .toList());
             claims.put("username", userPrincipal.getUsername());
             return buildJwtToken(userPrincipal.getUsername(), claims);
         }else {
@@ -77,10 +77,10 @@ public class JWTTokenProvider {
     public String generateJwtTokenFromUserDetails(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", userDetails.getUsername());
-        claims.put("authorities", userDetails.getAuthorities()
+        claims.put(AUTHORITIES, userDetails.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList())
+                .toList()
         );
         return buildJwtToken(userDetails.getUsername(), claims);
     }
@@ -97,9 +97,9 @@ public class JWTTokenProvider {
     }
 
     private List<String> extractAuthoritiesFromJwt(Claims jwt) {
-        return ((List<?>) jwt.get("authorities")).stream()
+        return ((List<?>) jwt.get(AUTHORITIES)).stream()
                 .map(auth -> ((LinkedHashMap<?, ?>) auth).get("authority").toString())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private void handleJwtException(Exception e) {

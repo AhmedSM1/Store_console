@@ -67,7 +67,7 @@ class SecurityServiceImplTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtTokenProvider.generateJwtToken(authentication)).thenReturn("accessToken123");
-        when(userService.getByUsername("validUsername")).thenReturn(user);  // CHANGED
+        when(userService.getUserEntityByUsername("validUsername")).thenReturn(user);  // CHANGED
         when(jwtTokenProvider.createRefreshToken(user)).thenReturn(refreshToken);
         when(refreshTokenRepository.save(refreshToken)).thenReturn(refreshToken);
 
@@ -101,7 +101,7 @@ class SecurityServiceImplTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(userService.getByUsername("nonexistentUser"))  // CHANGED
+        when(userService.getUserEntityByUsername("nonexistentUser"))  // CHANGED
                 .thenThrow(new AuthorizationException("User not found", HttpStatus.UNAUTHORIZED));
 
         // Act & Assert
@@ -126,7 +126,7 @@ class SecurityServiceImplTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
         when(jwtTokenProvider.generateJwtToken(authentication)).thenReturn("accessToken123");
-        when(userService.getByUsername("validUsername")).thenReturn(user);  // CHANGED
+        when(userService.getUserEntityByUsername("validUsername")).thenReturn(user);  // CHANGED
         when(jwtTokenProvider.createRefreshToken(user)).thenReturn(refreshToken);
         when(refreshTokenRepository.save(refreshToken)).thenThrow(new RuntimeException());
 

@@ -41,41 +41,7 @@ public class CurrentUserService {
                 .orElseThrow(() -> new UnauthorizedException("User not found in the system"));
     }
     
-    /**
-     * Checks if the authenticated user is an admin
-     * @return true if the user has ROLE_ADMIN, false otherwise
-     */
-    public boolean isAdmin() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
-    }
-    
-    /**
-     * Checks if the authenticated user has the specified userId
-     * @param userId the user ID to check against
-     * @return true if the current user has the specified ID
-     */
-    public boolean isCurrentUser(Long userId) {
-        if (userId == null) {
-            return false;
-        }
-        
-        try {
-            UserEntity currentUser = getCurrentUser();
-            return currentUser.getUserId().equals(userId);
-        } catch (UnauthorizedException e) {
-            return false;
-        }
-    }
-    
-    /**
-     * Checks if the current user is authorized to perform actions on the specified user
-     * This means either the user is acting on their own account or they are an admin
-     * @param userId the user ID to check authorization for
-     * @return true if authorized, false otherwise
-     */
-    public boolean isAuthorizedForUser(Long userId) {
-        return isCurrentUser(userId) || isAdmin();
-    }
+
+
+
 }

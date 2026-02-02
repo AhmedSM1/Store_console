@@ -11,9 +11,9 @@ public interface UserService {
 
 
     UserResponse getCurrentUserProfile();
-    UserResponse getUserById(Long userId);
+    UserResponse getUserByUsername(String username);
     UserResponse updateCurrentUserProfile(UserUpdateRequest request);
-    UserEntity getByUsername(String username);
+    UserEntity getUserEntityByUsername(String username);
     void changeCurrentUserPassword(PasswordChangeRequest request);
     
     void changeCurrentUserEmail(EmailChangeRequest request);

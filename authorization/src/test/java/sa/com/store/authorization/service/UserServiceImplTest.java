@@ -10,6 +10,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import sa.com.store.authorization.controller.dto.*;
 import sa.com.store.authorization.data.UserEntity;
+import sa.com.store.authorization.exception.AuthorizationException;
 import sa.com.store.authorization.mapper.UserMapper;
 import sa.com.store.authorization.repository.UserRepository;
 
@@ -338,34 +339,34 @@ class UserServiceImplTest {
     @Test
     void getUserById_Success() {
         // Arrange
-        Long userId = 1L;
-        when(userRepository.findById(userId)).thenReturn(Optional.of(savedUserEntity));
+        String username = "testuser";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.of(savedUserEntity));
         when(userMapper.toResponse(savedUserEntity)).thenReturn(userResponse);
 
         // Act
-        UserResponse response = userService.getUserById(userId);
+        UserResponse response = userService.getUserByUsername(username);
 
         // Assert
         assertNotNull(response);
         assertEquals("testuser", response.username());
         assertEquals("test@example.com", response.email());
 
-        verify(userRepository).findById(userId);
+        verify(userRepository).findByUsername(username);
         verify(userMapper).toResponse(savedUserEntity);
     }
 
     @Test
     void getUserById_NotFound() {
         // Arrange
-        Long userId = 999L;
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+        String username = "testuser";
+        when(userRepository.findByUsername(username)).thenReturn(Optional.empty());
 
         // Act & Assert
-        Exception exception = assertThrows(NoSuchElementException.class,
-                () -> userService.getUserById(userId));
+        Exception exception = assertThrows(AuthorizationException.class,
+                () -> userService.getUserByUsername(username));
 
-        assertEquals("User not found with ID: 999", exception.getMessage());
-        verify(userRepository).findById(userId);
+        assertEquals("User not found with ID: testuser", exception.getMessage());
+        verify(userRepository).findByUsername(username);
         verifyNoInteractions(userMapper);
     }
 
@@ -519,6 +520,77 @@ class UserServiceImplTest {
         // Act & Assert
         Exception exception = assertThrows(IllegalArgumentException.class,
                 () -> userService.changeCurrentUserEmail(request));
+
+        assertEquals("Email already in use", exception.getMessage());
+        verify(userRepository, never()).save(any());
+    }
+
+    // ================== Register Employee Tests ==================
+    @Test
+    void registerEmployee_SuccessfulRegistration() {
+        // Arrange
+        UserEntity affiliateEntity = UserEntity.builder()
+                .username("testuser")
+                .email("test@example.com")
+                .phonenumber("+1234567890")
+                .password("password123")
+                .role("ROLE_MANAGER")
+                .enabled(true)
+                .isAffiliate(true)
+                .build();
+
+        UserEntity savedAffiliateEntity = UserEntity.builder()
+                .userId(4L)
+                .username("testuser")
+                .email("test@example.com")
+                .phonenumber("+1234567890")
+                .password("encoded_password")
+                .role("ROLE_MANAGER")
+                .enabled(true)
+                .isAffiliate(true)
+                .build();
+
+        when(userRepository.findByUsername(request.username())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(request.email())).thenReturn(Optional.empty());
+        when(userMapper.toEntity(request, "ROLE_MANAGER")).thenReturn(affiliateEntity);
+        when(passwordEncoder.encode(request.password())).thenReturn("encoded_password");
+        when(userRepository.save(any(UserEntity.class))).thenReturn(savedAffiliateEntity);
+
+        // Act
+        UserRegistrationResponse response = userService.registerEmployee(request);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals("4", response.id());
+
+        verify(userRepository).findByUsername("testuser");
+        verify(userRepository).findByEmail("test@example.com");
+        verify(userMapper).toEntity(request, "ROLE_MANAGER");
+        verify(passwordEncoder).encode("password123");
+
+        ArgumentCaptor<UserEntity> entityCaptor = ArgumentCaptor.forClass(UserEntity.class);
+        verify(userRepository).save(entityCaptor.capture());
+        UserEntity capturedEntity = entityCaptor.getValue();
+
+        assertEquals("testuser", capturedEntity.getUsername());
+        assertEquals("test@example.com", capturedEntity.getEmail());
+        assertEquals("+1234567890", capturedEntity.getPhonenumber());
+        assertEquals("encoded_password", capturedEntity.getPassword());
+        assertTrue(capturedEntity.isAffiliate());
+        assertEquals("ROLE_MANAGER", capturedEntity.getRole());
+    }
+
+    @Test
+    void registerEmployee_EmailAlreadyExists() {
+        // Arrange
+        when(userRepository.findByUsername(request.username()))
+                .thenReturn(Optional.empty());
+        when(userRepository.findByEmail(request.email()))
+                .thenReturn(Optional.of(new UserEntity()));
+        when(userMapper.toEntity(request, "ROLE_MANAGER")).thenReturn(new UserEntity());
+        // Act & Assert
+        Exception exception = assertThrows(IllegalArgumentException.class,
+                () -> userService.registerEmployee(request));
 
         assertEquals("Email already in use", exception.getMessage());
         verify(userRepository, never()).save(any());

@@ -103,17 +103,14 @@ import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 
     @Test
     @WithMockUser(username = "testuser3")
-     void testGetUserById() {
-        UserRegistrationResponse response = createUser("testuser3");
-
-        String userId = response.id();
-
+     void testGetUserByUsername() {
+        createUser("testuser3");
         webTestClient.get()
-                .uri("/users/{id}", userId)
+                .uri("/users/{username}", "testuser3")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
-                .jsonPath("$.id").isEqualTo(userId)
+                .jsonPath("$.id").isNotEmpty()
                 .jsonPath("$.username").isEqualTo("testuser3")
                 .jsonPath("$.email").isNotEmpty();
     }

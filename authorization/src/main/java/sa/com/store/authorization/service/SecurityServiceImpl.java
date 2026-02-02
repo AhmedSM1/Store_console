@@ -15,7 +15,6 @@ import sa.com.store.authorization.data.RefreshToken;
 import sa.com.store.authorization.repository.RefreshTokenRepository;
 import sa.com.store.authorization.data.UserEntity;
 import sa.com.store.authorization.exception.AuthorizationException;
-import sa.com.store.authorization.repository.UserRepository;
 
 import java.time.Instant;
 
@@ -45,7 +44,7 @@ public class SecurityServiceImpl implements SecurityService {
             );
             String accessToken = tokenProvider.generateJwtToken(authentication);
             // Get user information
-            UserEntity user =userService.getByUsername(request.username());
+            UserEntity user =userService.getUserEntityByUsername(request.username());
             RefreshToken refreshToken = createRefreshToken(user);
             return UserLoginResponse.builder()
                     .accessToken(accessToken)

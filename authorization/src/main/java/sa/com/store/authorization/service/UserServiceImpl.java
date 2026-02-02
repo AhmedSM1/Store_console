@@ -2,7 +2,6 @@ package sa.com.store.authorization.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,10 +74,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAuthority('USER_WRITE') or @currentUserService.isCurrentUser(#userId)")
-    public UserResponse getUserById(Long userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new AuthorizationException(AuthorizationException.USER_NOT_FOUND_WITH_ID + userId, HttpStatus.BAD_REQUEST ));
+    public UserResponse getUserByUsername(String username) {
+        UserEntity user = this.getUserEntityByUsername(username);
         return userMapper.toResponse(user);
     }
 
@@ -93,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserEntity getByUsername(String username) {
+    public UserEntity getUserEntityByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new AuthorizationException(AuthorizationException.USER_NOT_FOUND_WITH_ID + username, HttpStatus.BAD_REQUEST ));
 

@@ -130,18 +130,5 @@ class CurrentUserServiceTest {
         }
     }
 
-    @Test
-    void isAdmin_False() {
-        // Arrange
-        try (MockedStatic<SecurityContextHolder> mockedStatic = Mockito.mockStatic(SecurityContextHolder.class)) {
-            mockedStatic.when(SecurityContextHolder::getContext).thenReturn(securityContext);
-            when(securityContext.getAuthentication()).thenReturn(authentication);
 
-            // Act
-            boolean result = currentUserService.isAdmin();
-
-            // Assert
-            assertFalse(result);
-        }
-    }
 }

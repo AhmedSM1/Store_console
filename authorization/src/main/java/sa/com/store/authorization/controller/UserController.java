@@ -50,9 +50,10 @@ public class UserController {
         return userService.getCurrentUserProfile();
     }
     
-    @GetMapping("/{userId}")
-    public UserResponse getUserById(@PathVariable Long userId) {
-        return userService.getUserById(userId);
+    @GetMapping("/{username}")
+    @PreAuthorize("authentication.name == #username")
+    public UserResponse getUserByUsername(@PathVariable String username ) {
+        return userService.getUserByUsername(username);
     }
     
     @PutMapping("/me")

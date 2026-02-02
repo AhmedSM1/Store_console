@@ -34,6 +34,17 @@ services:
       - ./init/postgres:/docker-entrypoint-initdb.d
     networks:
       - store-network
+  sonarqube:
+    image: sonarqube:latest
+    container_name: sonarqube
+    ports:
+      - "9000:9000"
+    environment:
+      - SONARQUBE_JDBC_URL=jdbc:postgresql://postgres:5432/sonarqube
+      - SONARQUBE_JDBC_USERNAME=postgres
+      - SONARQUBE_JDBC_PASSWORD=password
+    networks:
+      - store-network
   pgadmin:
     image: dpage/pgadmin4
     container_name: store-pgadmin

@@ -3,7 +3,7 @@ services:
     build: ./authorization
     container_name: auth-service
     ports:
-      - "8070:8070"
+      - "5070:8070"
     depends_on:
       - postgres
     environment:
@@ -14,7 +14,7 @@ services:
     build: ./products
     container_name: products-service
     ports:
-      - "8080:8080"
+      - "5080:8080"
     depends_on:
       - mongodb
     networks:
@@ -78,6 +78,17 @@ services:
       - ME_CONFIG_BASICAUTH=false
     depends_on:
       - mongodb
+    networks:
+      - store-network
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - authorization
+      - products
     networks:
       - store-network
 networks:

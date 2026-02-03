@@ -8,7 +8,7 @@ import sa.com.store.products.model.UserDTO;
 
 @FeignClient(name = "authorization-service", url = "${AUTH_SERVER}", configuration = FeignClientInterceptor.class)
 public interface UserClient {
-    @GetMapping("/auth-service/users/me")
+    @GetMapping("/users/me")
     UserDTO getUserById(
-                        @RequestHeader("Authorization") String bearerToken);
+            @RequestHeader("Authorization") String bearerToken);
 }

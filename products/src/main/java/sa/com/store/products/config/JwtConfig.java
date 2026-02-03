@@ -13,10 +13,9 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class JwtConfig {
 
+    private String secret;
 
-    private  String secret;
-
-    public JwtConfig(@Value("${app.security.jwtSecret}") String secret){
+    public JwtConfig(@Value("${app.security.jwtSecret}") String secret) {
         this.secret = secret;
     }
 
@@ -25,7 +24,7 @@ public class JwtConfig {
         byte[] keyBytes = secret.getBytes(StandardCharsets.UTF_8);
         var secretKey = new SecretKeySpec(keyBytes, "HmacSHA512");
         return NimbusJwtDecoder.withSecretKey(secretKey)
-                .macAlgorithm(MacAlgorithm.HS512) // <--- CRITICAL CHANGE
+                .macAlgorithm(MacAlgorithm.HS512)
                 .build();
     }
 }

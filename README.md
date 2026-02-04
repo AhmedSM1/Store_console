@@ -53,6 +53,134 @@ The system uses an **Nginx API Gateway** as the single entry point. You only nee
 | **Mongo Express** | - | `8081` | - | MongoDB GUI |
 
 ---
+## Diageams 
+
+### System Sequence Diagram
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 👤 User / Employee
+    participant Gateway as 🌐 API Gateway
+    participant Auth as 🔒 Auth Service
+    participant Postgres as 🐘 PostgreSQL
+    participant Product as 📦 Product Service
+    participant Mongo as 🍃 MongoDB
+
+    Note over User, Postgres: User Management (Auth Service)
+
+    User->>Gateway: POST /authorization/users (Register)
+    Gateway->>Auth: Process Registration
+    Auth->>Postgres: INSERT User Data (hash, email, role)
+    Postgres-->>Auth: Success
+    Auth-->>User: 201 Created
+
+    User->>Gateway: POST /authorization/login
+    Gateway->>Auth: Validate Credentials
+    Auth->>Postgres: SELECT User by Username
+    Postgres-->>Auth: User Record Found
+    Auth-->>User: 200 OK (JWT AccessToken)
+
+    Note over User, Mongo: Product Management (Product Service)
+
+    User->>Gateway: POST /products/products (Create Product)
+    Gateway->>Product: Forward Request with JWT
+    activate Product
+    Note right of Product: Internal Check: Does JWT<br/>have Admin/Emp Authority?
+    Product->>Mongo: Save Product Document
+    Mongo-->>Product: Success
+    Product-->>User: 201 Created (Product ID)
+    deactivate Product
+
+    Note over User, Mongo: Order Flow (Product Service)
+
+    User->>Gateway: POST /products/orders (Place Order)
+    Gateway->>Product: Forward Request with JWT
+    activate Product
+    Note right of Product: Internal Check: Authority exists?
+    
+    rect rgb(245, 245, 245)
+        Note right of Product: Processing Final Amount:<br/>Calculate Discounts & Rewards
+    end
+
+    Product->>Mongo: Insert Order (Status: PENDING)
+    Mongo-->>Product: Success
+    Product-->>User: 201 Created (Order Pending + Final Amount)
+    deactivate Product
+
+    Note over User, Product: Order Confirmation
+
+    User->>Gateway: PUT /products/orders/confirm?orderId=...
+    Gateway->>Product: Confirm Order
+    Product->>Mongo: Update Order (Status: CONFIRMED)
+    Mongo-->>Product: Success
+    Product-->>User: 200 OK (Order Confirmed)
+```
+---
+### System class Diagram
+
+```mermaid
+classDiagram
+    class User {
+        +String username
+        +String password
+        +String email
+        +String phone
+        +login()
+        +getProfile()
+    }
+
+    class Admin {
+        +createEmployee()
+        +createProduct()
+    }
+
+    class Employee {
+        +createProduct()
+        +calculateDiscount() 
+    }
+
+    class Customer {
+        +String address
+        +String city
+        +register()
+        +placeOrder()
+    }
+
+    class Product {
+        +String id
+        +String name
+        +String category
+        +double price
+        +int quantity
+    }
+
+    class Order {
+        +String orderId
+        +List products
+        +String status
+        +double totalAmount
+        +confirmOrder()
+    }
+
+    %% Relationships
+    User <|-- Admin
+    User <|-- Employee
+    User <|-- Customer
+    
+    Customer <|-- AffiliateCustomer
+    Customer <|-- LoyalCustomer
+
+    Customer "1" -- "*" Order : places
+    Order "1" -- "*" Product : contains
+
+    note for Employee "30% Disc on non-groceries &  $5 back per $100"
+    note for AffiliateCustomer "10% Disc on non-groceries  & $5 back per $100"
+    note for LoyalCustomer "5% Disc on non-groceries  & 5 back per $100"
+```
+
+
+---
 
 ## 🛰 API Documentation
 
@@ -113,3 +241,9 @@ Detailed **JaCoCo HTML reports** are generated at:
 - **Products Service:** Spring Boot, MongoDB.
 - **Network:** All containers communicate over a private bridge network named `store-network`.
 ```
+
+
+
+
+
+

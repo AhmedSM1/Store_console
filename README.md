@@ -13,7 +13,7 @@ Ensure your development environment meets the Spring Boot 4 requirements:
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/AhmedSM1/Store_console.git
-   ```
+
 
 2. **Spin up the infrastructure:**
    This will start the databases, management tools, the microservices, and the Nginx Gateway:
@@ -48,7 +48,7 @@ The system uses an **Nginx API Gateway** as the single entry point. You only nee
 | **Products Service** | `/products` | `8080` | MongoDB | Inventory management, Secure CRUD |
 | **pgAdmin** | - | `5050` | - | PostgreSQL GUI |
 | **Mongo Express** | - | `8081` | - | MongoDB GUI |
-
+| **Kibana** | - | `5601` | - | Kibana dashboard |
 ---
 ## Diageams 
 

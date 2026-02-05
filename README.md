@@ -51,7 +51,7 @@ The system uses an **Nginx API Gateway** as the single entry point. You only nee
 | **Products Service** | `/products` | `8080` | MongoDB | Inventory management, Secure CRUD |
 | **pgAdmin** | - | `5050` | - | PostgreSQL GUI |
 | **Mongo Express** | - | `8081` | - | MongoDB GUI |
-
+| **Kibana** | - | `5601` | - | Kibana dashboard |
 ---
 ## Diageams 
 

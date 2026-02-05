@@ -8,6 +8,7 @@ import sa.com.store.products.controller.dto.ProductDTO;
 import sa.com.store.products.entity.Product;
 import sa.com.store.products.mapper.ProductMapper;
 import sa.com.store.products.repository.ProductRepository;
+import sa.com.store.products.repository.ProductsMongoTemplate;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductsMongoTemplate productsMongoTemplate;
     private final ProductMapper productMapper;
 
     @Override
@@ -81,5 +83,20 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String id) {
         productRepository.deleteById(id);
+    }
+
+
+    @Override
+    @Transactional
+    public void decreaseProductQuantity(String productId, Integer orderedQuantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + productId));
+        if (product.getQuantity() < orderedQuantity) {
+            throw new IllegalArgumentException(
+                    "Insufficient quantity for product: " + product.getName() +
+                            ". Available: " + product.getQuantity() + ", Requested: " + orderedQuantity
+            );
+        }
+        productsMongoTemplate.decreaseProductQuantity(product.getId(), orderedQuantity);
     }
 }

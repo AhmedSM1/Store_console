@@ -1,5 +1,6 @@
 package sa.com.store.products.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,12 +9,14 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import sa.com.store.products.controller.dto.*;
 import sa.com.store.products.entity.Category;
 import sa.com.store.products.entity.Order;
 import sa.com.store.products.entity.ProductOrder;
 import sa.com.store.products.integration.UserClient;
 import sa.com.store.products.mapper.OrderMapper;
+import sa.com.store.products.model.QuantityUpdateEvent;
 import sa.com.store.products.model.UserDTO;
 import sa.com.store.products.repository.OrderRepository;
 
@@ -27,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
+@Slf4j
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
@@ -45,14 +49,16 @@ class OrderServiceTest {
     @Mock
     private OrderMapper orderMapper;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @InjectMocks
     private OrderServiceImpl orderService;
 
     @Captor
     private ArgumentCaptor<Order> orderCaptor;
-
     @Captor
-    private ArgumentCaptor<String> stringCaptor;
+    private ArgumentCaptor<QuantityUpdateEvent> quantityUpdateEventCaptor;
 
     private UserDTO testUserDTO;
     private ProductDTO testProductDTO;
@@ -224,14 +230,22 @@ class OrderServiceTest {
         verify(productService, times(1)).getProductById("product-1");
         verify(productService, times(1)).getProductById("product-2");
     }
+
     @Test
     void testConfirmOrderSuccess() {
         // Arrange
+        List<ProductOrder> products = List.of(
+                ProductOrder.builder()
+                        .productId("prod-1")
+                        .quantity(2)
+                        .build()
+        );
         Order pendingOrder = Order.builder()
                 .id("order-1")
                 .username("testuser")
                 .status("PENDING")
                 .priceAfterDiscount("90.0")
+                .products(products)
                 .build();
 
         when(orderRepository.findByIdAndStatus("order-1", "PENDING")).thenReturn(Optional.of(pendingOrder));
@@ -247,16 +261,28 @@ class OrderServiceTest {
 
         verify(orderRepository, times(1)).findByIdAndStatus("order-1", "PENDING");
         verify(orderRepository, times(1)).save(any(Order.class));
+        verify(eventPublisher).publishEvent(quantityUpdateEventCaptor.capture());
+        QuantityUpdateEvent expectedEvent = QuantityUpdateEvent.builder()
+                .productId("prod-1")
+                .quantity(2)
+                .build();
+        assertEquals(expectedEvent, quantityUpdateEventCaptor.getValue());
     }
-
     @Test
     void testConfirmOrderUpdatesStatus() {
         // Arrange
+        List<ProductOrder> products = List.of(
+                ProductOrder.builder()
+                        .productId("prod-1")
+                        .quantity(2)
+                        .build()
+        );
         Order pendingOrder = Order.builder()
                 .id("order-1")
                 .username("testuser")
                 .status("PENDING")
                 .priceAfterDiscount("90.0")
+                .products(products)
                 .build();
 
         when(orderRepository.findByIdAndStatus("order-1", "PENDING")).thenReturn(Optional.of(pendingOrder));
@@ -267,10 +293,17 @@ class OrderServiceTest {
 
         // Assert
         verify(orderRepository).save(orderCaptor.capture());
+        verify(eventPublisher, times(products.size())).publishEvent(quantityUpdateEventCaptor.capture());
+
         Order capturedOrder = orderCaptor.getValue();
         assertEquals("CONFIRMED", capturedOrder.getStatus());
         assertNotNull(capturedOrder.getConfirmedDate());
         assertEquals(LocalDate.now(), capturedOrder.getConfirmedDate());
+        QuantityUpdateEvent expectedEvent = QuantityUpdateEvent.builder()
+                .productId("prod-1")
+                .quantity(2)
+                .build();
+        assertEquals(expectedEvent, quantityUpdateEventCaptor.getValue());
     }
 
     @Test

@@ -23,6 +23,15 @@ public class LoggingAspect {
     private void controllerLogging() {
     }
 
+//    @Pointcut("execution(public * sa.com.store.products.events.*.*(..))")
+//    private void eventHandlersLogging() {
+//    }
+
+//    @Around(value = "eventHandlersLogging()")
+//    public Object logAroundCEventHandler(ProceedingJoinPoint joinPoint) throws Throwable {
+//        return getObject(joinPoint);
+//    }
+
     @Around(value = "serviceLogging()")
     public Object logAroundService(ProceedingJoinPoint joinPoint) throws Throwable {
         return getObject(joinPoint);

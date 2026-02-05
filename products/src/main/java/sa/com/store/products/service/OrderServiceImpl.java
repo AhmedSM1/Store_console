@@ -1,6 +1,7 @@
 package sa.com.store.products.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,6 +12,7 @@ import sa.com.store.products.entity.Order;
 import sa.com.store.products.entity.ProductOrder;
 import sa.com.store.products.integration.UserClient;
 import sa.com.store.products.mapper.OrderMapper;
+import sa.com.store.products.model.QuantityUpdateEvent;
 import sa.com.store.products.model.UserDTO;
 import sa.com.store.products.repository.OrderRepository;
 
@@ -29,6 +31,7 @@ public class OrderServiceImpl implements OrderService{
     private ProductService productService;
     private DiscountService discountService;
     private OrderMapper orderMapper;
+    private ApplicationEventPublisher eventPublisher;
 
 
     @Override
@@ -85,11 +88,24 @@ public class OrderServiceImpl implements OrderService{
         order.setStatus("CONFIRMED");
         order.setConfirmedDate(LocalDate.now());
         orderRepository.save(order);
-
+        order.getProducts().forEach(
+                productOrder -> decreaseQuantity(
+                        productOrder.productId(),
+                        productOrder.quantity()
+                )
+        );
         return ConfirmOrderResponse.builder()
                 .orderId(orderId)
                 .billAmount(order.getPriceAfterDiscount())
                 .build();
+    }
+
+    private void decreaseQuantity(String productId, int quantity) {
+        QuantityUpdateEvent updateEvent =  QuantityUpdateEvent.builder()
+                .quantity(quantity)
+                .productId(productId)
+                .build();
+        eventPublisher.publishEvent(updateEvent);
     }
 
     @Override

@@ -13,8 +13,15 @@ done
 echo -e "\nSonarQube is UP."
 
 
+# Navigate to the project root directory (one level up from the scripts folder)
+cd "$(dirname "$0")/.." || exit
+
 for DIR in "${PROJECTS[@]}"; do
     echo ">>> Analyzing Project: $DIR"
+    if [ ! -d "$DIR" ]; then
+        echo "Error: Directory $DIR not found in $(pwd)"
+        continue
+    fi
     cd "$DIR" || exit
     chmod +x mvnw
     

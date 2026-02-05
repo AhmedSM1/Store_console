@@ -1,4 +1,3 @@
-
 # Store Microservices System
 
 This project consists of two main microservices: **Authorization Service** and **Products Service**, providing a secure way to manage a product catalog. All traffic is routed through an **Nginx API Gateway** for simplified access and security.
@@ -26,10 +25,10 @@ Ensure your development environment meets the Spring Boot 4 requirements:
    Once the containers are healthy, run the automated scan script:
    ```bash
    # Grant execution permissions
-   chmod +x ./scan-all.sh
+   chmod +x scripts/sonar-setup.sh
    
    # Run the scan (Requires Java 21)
-   ./scan-all.sh
+   ./scripts/sonar-setup.sh
    ```
 
 4. **View Results**
@@ -238,10 +237,3 @@ Detailed **JaCoCo HTML reports** are generated at:
 - **Auth Service:** Spring Boot, PostgreSQL, JWT.
 - **Products Service:** Spring Boot, MongoDB.
 - **Network:** All containers communicate over a private bridge network named `store-network`.
-```
-
-
-
-
-
-

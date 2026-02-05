@@ -18,6 +18,7 @@ Ensure your development environment meets the Spring Boot 4 requirements:
 2. **Spin up the infrastructure:**
    This will start the databases, management tools, the microservices, and the Nginx Gateway:
    ```bash
+   chmod +x scripts/kibana-setup.sh
    docker-compose up -d
    ```
 

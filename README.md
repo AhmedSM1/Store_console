@@ -2,7 +2,7 @@
 
 This project consists of two main microservices: **Authorization Service** and **Products Service**, providing a secure way to manage a product catalog. All traffic is routed through an **Nginx API Gateway** for simplified access and security.
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 Ensure your development environment meets the Spring Boot 4 requirements:
@@ -38,7 +38,7 @@ Ensure your development environment meets the Spring Boot 4 requirements:
 
 ---
 
-## 🏗 System Architecture
+##  System Architecture
 
 The system uses an **Nginx API Gateway** as the single entry point. You only need to interact with port **8080** to reach both microservices.
 
@@ -200,7 +200,7 @@ This project is designed for automated testing using Postman Environments.
 
 ---
 
-## 🛠 Database Management Tools
+## Database Management Tools
 
 | Tool | URL | Credentials |
 | :--- | :--- | :--- |
@@ -211,7 +211,7 @@ This project is designed for automated testing using Postman Environments.
 
 ---
 
-## 🧪 Testing & Coverage
+##  Testing & Coverage
 
 ### Running Tests Locally
 Navigate to the service directory and run:
@@ -233,7 +233,7 @@ Detailed **JaCoCo HTML reports** are generated at:
 
 ---
 
-## 🏗 Technical Stack
+## Technical Stack
 - **Gateway:** Nginx (Alpine)
 - **Auth Service:** Spring Boot, PostgreSQL, JWT.
 - **Products Service:** Spring Boot, MongoDB.

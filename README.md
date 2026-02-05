@@ -1,6 +1,4 @@
-Below is the complete, updated `README.md` file. I have integrated the **Nginx API Gateway** as the central entry point and updated the architecture table and setup instructions to reflect the new structure.
 
-```markdown
 # Store Microservices System
 
 This project consists of two main microservices: **Authorization Service** and **Products Service**, providing a secure way to manage a product catalog. All traffic is routed through an **Nginx API Gateway** for simplified access and security.
@@ -11,7 +9,7 @@ This project consists of two main microservices: **Authorization Service** and *
 Ensure your development environment meets the Spring Boot 4 requirements:
 - **Java JDK 21** (Required for both the services and the SonarQube scanner)
 - **Docker & Docker Compose**
-   ```
+
 ### Installation & Setup
 1. **Clone the repository:**
    ```bash

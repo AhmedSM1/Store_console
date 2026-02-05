@@ -1405,7 +1405,7 @@
                   "});",
                   "",
                   "let responseData = pm.response.json();",
-                  "let affiliateProductId = responseData[0].id;",
+                  "let affiliateProductId = responseData[8].id;",
                   "pm.environment.set('loyalProductId', affiliateProductId);"
                 ],
                 "type": "text/javascript",
@@ -1416,14 +1416,7 @@
           ],
           "request": {
             "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{storeManagerJwt}}",
-                  "type": "string"
-                }
-              ]
+              "type": "noauth"
             },
             "method": "GET",
             "header": [],
@@ -1476,7 +1469,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{affiliateProductId}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
+              "raw": "{\n    \"products\": [\n        {\n            \"productId\": \"{{loyalProductId}}\",\n            \"quantity\": 1\n        }\n    ],\n    \"username\": \"loyalCustomer\",\n    \"address\": \"Riyadh, Saudi Arabia\",\n    \"city\": \"Riyadh\"\n}",
               "options": {
                 "raw": {
                   "language": "json"

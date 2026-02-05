@@ -11,12 +11,12 @@ This project consists of two main microservices: **Authorization Service** and *
 Ensure your development environment meets the Spring Boot 4 requirements:
 - **Java JDK 21** (Required for both the services and the SonarQube scanner)
 - **Docker & Docker Compose**
-
+   ```
 ### Installation & Setup
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/AhmedSM1/Store_console.git
-   ```
+
 
 2. **Spin up the infrastructure:**
    This will start the databases, management tools, the microservices, and the Nginx Gateway:

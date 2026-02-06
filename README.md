@@ -33,7 +33,11 @@ Ensure your development environment meets the Spring Boot 4 requirements:
    ```
    Open your browser at: [http://localhost:9000](http://localhost:9000)
    **Login:** `admin` / **Password:** `admin`
-4. **View Kibana Logs**
+
+   
+5. **View Kibana Logs (Kibana)**
+
+   
    Open your browser at: [http://localhost:5601/app/discover](http://localhost:5601/app/discover)
 
 

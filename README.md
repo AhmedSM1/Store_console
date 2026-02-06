@@ -31,10 +31,11 @@ Ensure your development environment meets the Spring Boot 4 requirements:
    # Run the scan (Requires Java 21)
    ./scripts/sonar-setup.sh
    ```
+   Open your browser at: [http://localhost:9000](http://localhost:9000)
+   **Login:** `admin` / **Password:** `admin`
+4. **View Kibana Logs**
+   Open your browser at: [http://localhost:5601/app/discover](http://localhost:5601/app/discover)
 
-4. **View Results**
-   - Open your browser at: [http://localhost:9000](http://localhost:9000)
-   - **Login:** `admin` / **Password:** `admin`
 
 ---
 

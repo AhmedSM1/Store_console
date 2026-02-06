@@ -26,10 +26,10 @@ Ensure your development environment meets the Spring Boot 4 requirements:
    Once the containers are healthy, run the automated scan script:
    ```bash
    # Grant execution permissions
-   chmod +x scripts/sonar-setup.sh
+   chmod +x sonar-setup.sh
    
    # Run the scan (Requires Java 21)
-   ./scripts/sonar-setup.sh
+   ./sonar-setup.sh
    ```
    Open your browser at: [http://localhost:9000](http://localhost:9000)
    **Login:** `admin` / **Password:** `admin`
@@ -39,6 +39,14 @@ Ensure your development environment meets the Spring Boot 4 requirements:
 
    
    Open your browser at: [http://localhost:5601/app/discover](http://localhost:5601/app/discover)
+
+6. **View Swagger docs**
+
+   
+   - For Auhtorization service swagger:
+      Open your browser at: [http://localhost:8080/authorization/swagger-ui/index.html](http://localhost:8080/authorization/swagger-ui/index.html#/)
+   - For Producrs service swagger:
+      Open your browser at: [http://localhost:8080/products/swagger-ui/index.html](http://localhost:8080/products/swagger-ui/index.html#/)
 
 
 ---

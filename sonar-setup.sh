@@ -2,7 +2,6 @@
 
 SONAR_URL="http://localhost:9000"
 ADMIN_AUTH="admin:admin"
-# List your project folders here
 PROJECTS=("products" "authorization")
 
 echo "Waiting for SonarQube to be ready..."
@@ -11,17 +10,8 @@ until $(curl --output /dev/null --silent --head --fail $SONAR_URL); do
     sleep 5
 done
 echo -e "\nSonarQube is UP."
-
-
-# Navigate to the project root directory (one level up from the scripts folder)
-cd "$(dirname "$0")/.." || exit
-
 for DIR in "${PROJECTS[@]}"; do
     echo ">>> Analyzing Project: $DIR"
-    if [ ! -d "$DIR" ]; then
-        echo "Error: Directory $DIR not found in $(pwd)"
-        continue
-    fi
     cd "$DIR" || exit
     chmod +x mvnw
     
@@ -35,6 +25,8 @@ for DIR in "${PROJECTS[@]}"; do
     ./mvnw clean verify sonar:sonar -Dsonar.projectKey="$DIR" -Dsonar.host.url="$SONAR_URL" -Dsonar.login="$TOKEN" -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
     cd ..
+
 done
+
 
 echo "All projects scanned! View them at $SONAR_URL"

@@ -22,7 +22,7 @@ for DIR in "${PROJECTS[@]}"; do
     TOKEN=$(curl -u $ADMIN_AUTH -X POST "$SONAR_URL/api/user_tokens/generate?name=token-$DIR-$(date +%s)" | grep -o '"token":"[^"]*' | grep -o '[^"]*$')
 
     # 3. Run Scan (All on one line to prevent "No such file" errors)
-    ./mvnw clean verify sonar:sonar -Dsonar.projectKey="$DIR" -Dsonar.host.url="$SONAR_URL" -Dsonar.login="$TOKEN" -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
+    ./mvnw clean verify sonar:sonar -Dsonar.projectKey="$DIR" -Dsonar.host.url="$SONAR_URL" -Dsonar.token="$TOKEN" -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
 
     cd ..
 

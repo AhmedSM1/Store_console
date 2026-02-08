@@ -4,7 +4,6 @@ import sa.com.store.products.controller.dto.CreateProductRequest;
 import sa.com.store.products.controller.dto.ProductDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductService {
 

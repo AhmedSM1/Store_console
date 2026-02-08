@@ -12,12 +12,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class OpenApiConfig {
 
-
+    private static String authentication = "Bearer Authentication";
     @Bean
     public OpenAPI customOpenAPI() {
+
         return new OpenAPI()
-                .addSecurityItem(new SecurityRequirement().addList("Bearer Authentication"))
-                .components(new Components().addSecuritySchemes("Bearer Authentication", createSecurityScheme()))
+                .addSecurityItem(new SecurityRequirement().addList(authentication))
+                .components(new Components().addSecuritySchemes(authentication, createSecurityScheme()))
                 // Remove the hardcoded .servers() for now to let auto-detection work
                 // Or ensure it's just the prefix:
                 .addServersItem(new Server().url("/products"));
@@ -26,7 +27,7 @@ public class OpenApiConfig {
 
     private SecurityScheme createSecurityScheme() {
         return new SecurityScheme()
-                .name("Bearer Authentication")
+                .name(authentication)
                 .type(SecurityScheme.Type.HTTP)
                 .scheme("bearer")
                 .bearerFormat("JWT");

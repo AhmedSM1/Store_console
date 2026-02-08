@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 import sa.com.store.products.entity.Product;
-import sa.com.store.products.exception.InsufficientQuantityException;
 
 @Component
 @AllArgsConstructor

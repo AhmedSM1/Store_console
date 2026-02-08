@@ -15,7 +15,6 @@ import sa.com.store.authorization.mapper.UserMapper;
 import sa.com.store.authorization.repository.UserRepository;
 
 import java.time.OffsetDateTime;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -416,7 +415,7 @@ class UserServiceImplTest {
     @Test
     void changeCurrentUserPassword_Success() {
         // Arrange
-        PasswordChangeRequest request = PasswordChangeRequest.builder()
+        PasswordChangeRequest passwordChangeRequest = PasswordChangeRequest.builder()
                 .currentPassword("password123")
                 .newPassword("newpassword456")
                 .build();
@@ -427,7 +426,7 @@ class UserServiceImplTest {
         when(userRepository.save(any(UserEntity.class))).thenReturn(savedUserEntity);
 
         // Act
-        assertDoesNotThrow(() -> userService.changeCurrentUserPassword(request));
+        assertDoesNotThrow(() -> userService.changeCurrentUserPassword(passwordChangeRequest));
 
         // Assert
         verify(currentUserService).getCurrentUser();
@@ -442,7 +441,7 @@ class UserServiceImplTest {
     @Test
     void changeCurrentUserPassword_InvalidCurrentPassword() {
         // Arrange
-        PasswordChangeRequest request = PasswordChangeRequest.builder()
+        PasswordChangeRequest passwordChangeRequest = PasswordChangeRequest.builder()
                 .currentPassword("wrongpassword")
                 .newPassword("newpassword456")
                 .build();
@@ -452,7 +451,7 @@ class UserServiceImplTest {
 
         // Act & Assert
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.changeCurrentUserPassword(request));
+                () -> userService.changeCurrentUserPassword(passwordChangeRequest));
 
         assertEquals("Current password is incorrect", exception.getMessage());
         verify(passwordEncoder, never()).encode(anyString());
@@ -463,7 +462,7 @@ class UserServiceImplTest {
     @Test
     void changeCurrentUserEmail_Success() {
         // Arrange
-        EmailChangeRequest request = EmailChangeRequest.builder()
+        EmailChangeRequest emailChangeRequest = EmailChangeRequest.builder()
                 .newEmail("newemail@example.com")
                 .password("password123")
                 .build();
@@ -474,7 +473,7 @@ class UserServiceImplTest {
         when(userRepository.save(any(UserEntity.class))).thenReturn(savedUserEntity);
 
         // Act
-        assertDoesNotThrow(() -> userService.changeCurrentUserEmail(request));
+        assertDoesNotThrow(() -> userService.changeCurrentUserEmail(emailChangeRequest));
 
         // Assert
         verify(currentUserService).getCurrentUser();
@@ -489,7 +488,7 @@ class UserServiceImplTest {
     @Test
     void changeCurrentUserEmail_InvalidPassword() {
         // Arrange
-        EmailChangeRequest request = EmailChangeRequest.builder()
+        EmailChangeRequest emailChangeRequest = EmailChangeRequest.builder()
                 .newEmail("newemail@example.com")
                 .password("wrongpassword")
                 .build();
@@ -499,7 +498,7 @@ class UserServiceImplTest {
 
         // Act & Assert
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.changeCurrentUserEmail(request));
+                () -> userService.changeCurrentUserEmail(emailChangeRequest));
 
         assertEquals("Password is incorrect", exception.getMessage());
         verify(userRepository, never()).save(any());
@@ -508,7 +507,7 @@ class UserServiceImplTest {
     @Test
     void changeCurrentUserEmail_EmailAlreadyExists() {
         // Arrange
-        EmailChangeRequest request = EmailChangeRequest.builder()
+        EmailChangeRequest emailChangeRequest = EmailChangeRequest.builder()
                 .newEmail("existing@example.com")
                 .password("password123")
                 .build();
@@ -519,7 +518,7 @@ class UserServiceImplTest {
 
         // Act & Assert
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> userService.changeCurrentUserEmail(request));
+                () -> userService.changeCurrentUserEmail(emailChangeRequest));
 
         assertEquals("Email already in use", exception.getMessage());
         verify(userRepository, never()).save(any());

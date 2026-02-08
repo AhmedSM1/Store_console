@@ -96,12 +96,6 @@ public class JWTTokenProvider {
                 .compact();
     }
 
-    private List<String> extractAuthoritiesFromJwt(Claims jwt) {
-        return ((List<?>) jwt.get(AUTHORITIES)).stream()
-                .map(auth -> ((LinkedHashMap<?, ?>) auth).get("authority").toString())
-                .toList();
-    }
-
     private void handleJwtException(Exception e) {
         if (e instanceof ExpiredJwtException) {
             logger.error("JWT token is expired: {}", e.getMessage());
